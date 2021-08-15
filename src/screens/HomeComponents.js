@@ -23,7 +23,7 @@ const LandingBg = (props) => {
     );
 };
 
-const LandingForm1 = ({ choices, onChoiceChange, onChoiceRemove, onChoiceNew }) => {
+const LandingForm1 = ({ choices, onChoiceChange, onChoiceRemove, onChoiceNew, onChangeForm, currentStep }) => {
     const { breakpointSelector } = useResize();
     const fieldSpacer = <i className="bi bi-x-lg btn o-0 disabled py-2" />;
     return (
@@ -38,10 +38,10 @@ const LandingForm1 = ({ choices, onChoiceChange, onChoiceRemove, onChoiceNew }) 
                             GenerateArray(
                                 choices.length,
                                 (index) => <div key={index} className="d-flex flex-row py-1">
-                                    <input className="d-inline-block form-control form-control rounded-1" value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)}></input>
+                                    <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)}></input>
                                     {
                                         Tern(index > 1,
-                                            <button className="rounded-circle btn" onClick={(e) => { onChoiceRemove(e, index); }} >
+                                            <button disabled={currentStep !== 1} className="rounded-circle btn" onClick={(e) => { onChoiceRemove(e, index); }} >
                                                 <i className="bi bi-x-lg" />
                                             </button>,
                                             fieldSpacer,
@@ -53,21 +53,21 @@ const LandingForm1 = ({ choices, onChoiceChange, onChoiceRemove, onChoiceNew }) 
                     </div>
                 </div>
                 <div className="d-flex flex-row">
-                    <button className={"mt-4 w-50 btn btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} onClick={onChoiceNew}>Add a New Choice</button>
+                    <button disabled={currentStep !== 1} className={"mt-4 w-50 btn btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} onClick={onChoiceNew}>Add a New Choice</button>
                     <span className="ps-2"></span>
-                    <button className="mt-4 w-50 btn btn rounded-1 btn-primary text-white">Next</button>
+                    <button disabled={currentStep !== 1} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={(e) => onChangeForm(e, 2)}>Next</button>
                 </div>
             </div>
         </form>
     );
 }
 
-const LandingForm2 = ({ factors, onFactorChange, onFactorRemove, onFactorNew }) => {
+const LandingForm2 = ({ factors, onFactorChange, onFactorRemove, onFactorNew, onChangeForm, currentStep }) => {
     const { breakpointSelector } = useResize();
     const fieldSpacer = <i className="bi bi-x-lg btn o-0 disabled py-2" />;
 
     return (
-        <form className="d-block card rounded-2 shadow border-0 mb-3">
+        <form disabled={currentStep === 2} className="d-block card rounded-2 shadow border-0 mb-3">
             <div className="bg-secondary rounded-top rounded-sm py-2 px-3 text-center">
                 <span className="text-white">Step 2: Enter your factors</span>
             </div>
@@ -79,10 +79,10 @@ const LandingForm2 = ({ factors, onFactorChange, onFactorRemove, onFactorNew }) 
                             GenerateArray(
                                 factors.length,
                                 (index) => <div key={index} className="d-flex flex-row py-1">
-                                    <input className="d-inline-block form-control form-control rounded-1" value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
+                                    <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
                                     {
                                         Tern(index > 1,
-                                            <button className="rounded-circle btn" onClick={(e) => { onFactorRemove(e, index); }} >
+                                            <button disabled={currentStep !== 2} className="rounded-circle btn" onClick={(e) => { onFactorRemove(e, index); }} >
                                                 <i className="bi bi-x-lg" />
                                             </button>,
                                             fieldSpacer,
@@ -94,9 +94,11 @@ const LandingForm2 = ({ factors, onFactorChange, onFactorRemove, onFactorNew }) 
                     </div>
                 </div>
                 <div className="d-flex flex-row">
-                    <button className={"mt-4 w-50 btn btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}>Add a New Factor</button>
+                    <button disabled={currentStep !== 2} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}>Previous</button>
                     <span className="ps-2"></span>
-                    <button className="mt-4 w-50 btn btn rounded-1 btn-primary text-white">Next</button>
+                    <button disabled={currentStep !== 2} className={"mt-4 w-50 btn btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}>Add a New Factor</button>
+                    <span className="ps-2"></span>
+                    <button disabled={currentStep !== 2} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white">Next</button>
                 </div>
             </div>
         </form>
