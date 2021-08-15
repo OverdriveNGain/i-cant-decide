@@ -2,26 +2,31 @@ import { useState, useRef, useLayoutEffect } from "react";
 import { Tern } from "../helpers/func";
 import useResize from "../hooks/useResize";
 // import Math from 'math';
-import { LandingForm1, LandingForm2, LandingBg } from "./HomeComponents";
+import { LandingForm1, LandingForm2, LandingForm3, LandingBg } from "./HomeComponents";
 
 const Home = () => {
     const form1 = useRef(null)
     const form2 = useRef(null)
     const form3 = useRef(null)
+    const form4 = useRef(null)
+
+    const [choices, setChoices] = useState(["", ""])
+    const [factors, setFactors] = useState([{ name: "", rating: 6 }, { name: "", rating: 6 }])
+    const [stepData, setStepData] = useState([1, 1]); // step, and maxStep
+
 
     const { breakpointSelector } = useResize();
-    const [choices, setChoices] = useState(["", ""])
-    const [factors, setFactors] = useState(["", ""])
-    const [stepData, setStepData] = useState([1, 1]); // step, and maxStep
     const pd = (e, func) => { e.preventDefault(); func(); }
 
     const onChoiceRemove = (e, i) => { pd(e, () => { setChoices(choices.filter((v, j) => j !== i)) }) }
-    const onChoiceNew = (e) => { pd(e, () => { setChoices([...choices, ""]) }) }
+    const onChoiceNew = (e) => { pd(e, () => { setChoices([...choices, { name: "", rating: 6 }]) }) }
     const onChoiceChange = (e, index) => { setChoices(choices.map((v, i) => Tern(i === index, e.target.value, choices[i]))); }
 
     const onFactorRemove = (e, i) => { pd(e, () => { setFactors(factors.filter((v, j) => j !== i)) }) }
-    const onFactorNew = (e) => { pd(e, () => { setFactors([...factors, ""]) }) }
-    const onFactorChange = (e, index) => { setFactors(factors.map((v, i) => Tern(i === index, e.target.value, factors[i]))); }
+    const onFactorNew = (e) => { pd(e, () => { setFactors([...factors, { name: "", rating: 6 }]) }) }
+    const onFactorChange = (e, index) => { setFactors(factors.map((v, i) => Tern(i === index, { name: e.target.value, rating: v.rating }, factors[i]))); }
+
+    const onFactorRatingChange = (e, factor) => setFactors(factors.map((v, i) => Tern(v.name === factor, { name: factor, rating: parseInt(e.target.value) }, factors[i])));
 
     const onChangeForm = (e, nextStage) => { pd(e, () => { setStepData([nextStage, Math.max(nextStage, stepData[1])]) }) }
 
@@ -31,12 +36,13 @@ const Home = () => {
             case 1:
                 form1.current.scrollIntoView(options);
                 break;
-            default:
+            case 2:
                 form2.current.scrollIntoView(options);
+                break;
+            default:
+                form3.current.scrollIntoView(options);
         }
     }, [stepData])
-
-    console.log(stepData);
 
     return (
         <div>
@@ -59,6 +65,12 @@ const Home = () => {
                             display: Tern(stepData[1] >= 2, "block", "none")
                         }}>
                             <LandingForm2 factors={factors} onFactorChange={onFactorChange} onFactorRemove={onFactorRemove} onFactorNew={onFactorNew} onChangeForm={onChangeForm} currentStep={stepData[0]} />
+                        </div>
+                        <div ref={form3} style={{
+                            opacity: Tern(stepData[0] === 3, 1.0, 0.4),
+                            display: Tern(stepData[1] >= 3, "block", "none")
+                        }}>
+                            <LandingForm3 factors={factors} onFactorRatingChange={onFactorRatingChange} onChangeForm={onChangeForm} currentStep={stepData[0]} />
                         </div>
                     </div>
                 </div>

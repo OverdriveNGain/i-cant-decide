@@ -55,7 +55,7 @@ const LandingForm1 = ({ choices, onChoiceChange, onChoiceRemove, onChoiceNew, on
                 <div className="d-flex flex-row">
                     <button disabled={currentStep !== 1} className={"mt-4 w-50 btn btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} onClick={onChoiceNew}>Add a New Choice</button>
                     <span className="ps-2"></span>
-                    <button disabled={currentStep !== 1} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={(e) => onChangeForm(e, 2)}>Next</button>
+                    <button disabled={currentStep !== 1} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={(e) => onChangeForm(e, 2)}>Next Step</button>
                 </div>
             </div>
         </form>
@@ -79,7 +79,7 @@ const LandingForm2 = ({ factors, onFactorChange, onFactorRemove, onFactorNew, on
                             GenerateArray(
                                 factors.length,
                                 (index) => <div key={index} className="d-flex flex-row py-1">
-                                    <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
+                                    <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" value={factors[index].name} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
                                     {
                                         Tern(index > 1,
                                             <button disabled={currentStep !== 2} className="rounded-circle btn" onClick={(e) => { onFactorRemove(e, index); }} >
@@ -94,11 +94,45 @@ const LandingForm2 = ({ factors, onFactorChange, onFactorRemove, onFactorNew, on
                     </div>
                 </div>
                 <div className="d-flex flex-row">
-                    <button disabled={currentStep !== 2} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}>Previous</button>
+                    <button disabled={currentStep !== 2} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}>Previous Step</button>
                     <span className="ps-2"></span>
                     <button disabled={currentStep !== 2} className={"mt-4 w-50 btn btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}>Add a New Factor</button>
                     <span className="ps-2"></span>
-                    <button disabled={currentStep !== 2} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white">Next</button>
+                    <button disabled={currentStep !== 2} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={(e) => onChangeForm(e, 3)}>Next Step</button>
+                </div>
+            </div>
+        </form>
+
+    );
+}
+
+const LandingForm3 = ({ factors, onFactorRatingChange, onChangeForm, currentStep }) => {
+    const { breakpointSelector } = useResize();
+
+    return (
+        <form disabled={currentStep === 2} className="d-block card rounded-2 shadow border-0 mb-3">
+            <div className="bg-secondary rounded-top rounded-sm py-2 px-3 text-center">
+                <span className="text-white">Step 3: Rate your factors' importance</span>
+            </div>
+            <div className="p-3">
+                <p>For example, you can rate your </p>
+                <div className="row justify-content-center mt-3">
+                    <div className={breakpointSelector("col")}>
+                        {
+                            GenerateArray(
+                                factors.length,
+                                (index) => <div key={index} className="d-flex flex-row py-1">
+                                    <span className="w-50 text-end me-3">{factors[index].name}</span>
+                                    <input type="range" className="form-range" min="0" max="10" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
+                                </div>
+                            )
+                        }
+                    </div>
+                </div>
+                <div className="d-flex flex-row">
+                    <button disabled={currentStep !== 3} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 2)}>Previous Step</button>
+                    <span className="ps-2"></span>
+                    <button disabled={currentStep !== 3} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white">Next Step</button>
                 </div>
             </div>
         </form>
@@ -108,4 +142,4 @@ const LandingForm2 = ({ factors, onFactorChange, onFactorRemove, onFactorNew, on
 
 export default LandingForm2;
 
-export { LandingBg, LandingForm1, LandingForm2 }
+export { LandingBg, LandingForm1, LandingForm2, LandingForm3 }
