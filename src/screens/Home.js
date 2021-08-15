@@ -1,69 +1,37 @@
 import { useState } from "react";
-import { maxChoices } from "../helpers/constants";
-import { GenerateArray, Tern } from "../helpers/func";
+import { Tern } from "../helpers/func";
 import useResize from "../hooks/useResize";
-import LandingBg from "./HomeComponents";
+import { LandingForm1, LandingForm2, LandingBg } from "./HomeComponents";
 
 const Home = () => {
-    const [choices, setChoices] = useState(["", ""])
     const { breakpointSelector } = useResize();
+    const [choices, setChoices] = useState(["", ""])
+    const [factors, setFactors] = useState(["", ""])
+    const pd = (e, func) => { e.preventDefault(); func(); }
 
-    const onInputChoiceChange = (e, index) => {
-        const c = [...choices]
-        c[index] = e.target.value
-        setChoices(c);
-    }
+    const onChoiceRemove = (e, i) => { pd(e, () => { setChoices(choices.filter((v, j) => j !== i)) }) }
+    const onChoiceNew = (e) => { pd(e, () => { setChoices([...choices, ""]) }) }
+    const onChoiceChange = (e, index) => { setChoices(choices.map((v, i) => Tern(i === index, e.terget.value, choices[i]))); }
 
-    const onButtonNewChoice = (e) => {
-        e.preventDefault();
-        setChoices([...choices, ""])
-    }
-
-    const onButtonRemove = (e, i) => {
-        e.preventDefault();
-        setChoices(choices.filter((v, j) => j !== i))
-    }
-
-    const fieldSpacer = <i className="bi bi-x-lg my-3 btn o-0 disabled" />;
+    const onFactorRemove = (e, i) => { pd(e, () => { setFactors(factors.filter((v, j) => j !== i)) }) }
+    const onFactorNew = (e) => { pd(e, () => { setFactors([...factors, ""]) }) }
+    const onFactorChange = (e, index) => { setFactors(factors.map((v, i) => Tern(i === index, e.terget.value, factors[i]))); }
 
     return (
         <div>
             <div style={{ position: "absolute", zIndex: "-10", overflow: "hidden", width: "100wh", height: "100vh" }}>
                 <LandingBg />
             </div>
-            <div className="container d-flex vh-100 flex-column justify-content-center">
-                <h1 className="display-1 fst-italic fw-bold my-3">I can't decide</h1>
-                <form>
-                    <h3 className="text-muted">Enter your choices:</h3>
-                    <div className={breakpointSelector("row justify-content-center", null, "row")}>
-                        <div className={breakpointSelector("col", null, "col-6")}>
-                            {
-                                GenerateArray(
-                                    choices.length,
-                                    (index) => <div key={index} className="d-flex flex-row">
-                                        <input className="d-inline-block form-control form-control-lg rounded-pill my-1" value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onInputChoiceChange(e, index)}></input>
-                                        {
-                                            Tern(index > 1,
-                                                <i className="bi bi-x-lg my-3 btn" onClick={(e) => { onButtonRemove(e, index); }} />,
-                                                fieldSpacer,
-                                            )
-                                        }
-                                    </div>
-                                )
-                            }{
-                                Tern(
-                                    choices.length < maxChoices,
-                                    <div className="d-flex flex-row">
-                                        <button className="btn btn-outline-primary mt-1 w-100 rounded-pill" onClick={onButtonNewChoice}>Add a New Choice</button>
-                                        {fieldSpacer}
-                                    </div>,
-                                    <div />
-                                )
-                            }
-                            <button className="btn btn-primary btn-lg my-4 rounded-pill text-white">Next</button>
-                        </div>
+            <div className="container">
+                <div style={{ height: "25vh" }}>s</div>
+                <h1 className="display-1 fst-italic fw-bold my-3 text-center text-primary">I can't decide</h1>
+                <div style={{ width: `${breakpointSelector(100, 90, 80, 70, 60)}%`, margin: "auto" }}>
+                    <div>
+                        <LandingForm1 choices={choices} onChoiceChange={onChoiceChange} onChoiceRemove={onChoiceRemove} onChoiceNew={onChoiceNew} />
+                        <LandingForm2 factors={factors} onFactorChange={onFactorChange} onFactorRemove={onFactorRemove} onFactorNew={onFactorNew} />
                     </div>
-                </form>
+                </div>
+                <div style={{ height: "25vh" }}>s</div>
             </div>
         </div>
     );

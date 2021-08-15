@@ -26,6 +26,11 @@ $utilities: (
     )
   )
  );
+ $border-radius-sm:            .5rem;
+ $border-radius:               1.2rem;
+ $border-radius-lg:            3rem;
+
+ $font-size-base:              1.3rem;
 
 @import "../node_modules/bootstrap/scss/variables";
 @import "../node_modules/bootstrap/scss/mixins";
