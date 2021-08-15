@@ -2,7 +2,7 @@ import { useState, useRef, useLayoutEffect } from "react";
 import { Tern } from "../helpers/func";
 import useResize from "../hooks/useResize";
 // import Math from 'math';
-import { LandingForm1, LandingForm2, LandingForm3, LandingBg } from "./HomeComponents";
+import { LandingForm1, LandingForm2, LandingForm3, LandingForm4, LandingBg } from "./HomeComponents";
 
 const Home = () => {
     const form1 = useRef(null)
@@ -12,8 +12,8 @@ const Home = () => {
 
     const [choices, setChoices] = useState(["", ""])
     const [factors, setFactors] = useState([{ name: "", rating: 6 }, { name: "", rating: 6 }])
+    const [ratingMatrix, setRatingMatrix] = useState([])
     const [stepData, setStepData] = useState([1, 1]); // step, and maxStep
-
 
     const { breakpointSelector } = useResize();
     const pd = (e, func) => { e.preventDefault(); func(); }
@@ -39,8 +39,11 @@ const Home = () => {
             case 2:
                 form2.current.scrollIntoView(options);
                 break;
-            default:
+            case 3:
                 form3.current.scrollIntoView(options);
+                break;
+            default:
+                form4.current.scrollIntoView(options);
         }
     }, [stepData])
 
@@ -70,7 +73,13 @@ const Home = () => {
                             opacity: Tern(stepData[0] === 3, 1.0, 0.4),
                             display: Tern(stepData[1] >= 3, "block", "none")
                         }}>
-                            <LandingForm3 factors={factors} onFactorRatingChange={onFactorRatingChange} onChangeForm={onChangeForm} currentStep={stepData[0]} />
+                            <LandingForm3 factors={factors} onFactorRatingChange={onFactorRatingChange} onChangeForm={onChangeForm} currentStep={stepData[0]} ratingMatrix={ratingMatrix} setRatingMatrix={setRatingMatrix} choices={choices} />
+                        </div>
+                        <div ref={form4} style={{
+                            opacity: Tern(stepData[0] === 4, 1.0, 0.4),
+                            display: Tern(stepData[1] >= 4, "block", "none")
+                        }}>
+                            <LandingForm4 factors={factors} choices={choices} ratingMatrix={ratingMatrix} setRatingMatrix={setRatingMatrix} onFactorRatingChange={onFactorRatingChange} onChangeForm={onChangeForm} currentStep={stepData[0]} />
                         </div>
                     </div>
                 </div>
