@@ -12,4 +12,6 @@ const Tern = (bool, v1, v2) => {
     return v2;
 }
 
-export { GenerateArray, Tern };
+const Pd = (e, func) => { e.preventDefault(); func(); }
+
+export { GenerateArray, Tern, Pd };
