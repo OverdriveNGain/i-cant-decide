@@ -51,7 +51,7 @@ const Home = () => {
             <div className="container">
                 <div style={{ height: "10vh" }}></div>
                 <div className="display-1 h1 fw-bold text-center text-primary font-title m-0">I can't decide</div>
-                <p className="text-center text-muted o-50 mb-5">A Rational Helper for the Indecisive</p>
+                <p className="text-center text-muted o-50 mb-5">A Rational Helper for the Indecisive</p>
                 <div style={{ width: `${breakpointSelector(100, 90, 80, 70, 60)}%`, margin: "auto" }}>
                     <div>
                         <div ref={form1} className="animated-all" style={{
@@ -77,14 +77,14 @@ const Home = () => {
                         }}>
                             <LandingForm4 factors={factors} choices={choices} onChangeForm={onChangeForm} currentStep={stePdata[0]} upperSetRatingMatrix={setRatingMatrix} />
                         </div>
-                        <div ref={form5} style={{
-                            opacity: Tern(stePdata[0] === 5, 1.0, 0.4),
-                            display: Tern(stePdata[1] >= 5, "block", "none")
-                        }}>
-                            <Results ratingMatrix={ratingMatrix} factors={factors} onChangeForm={onChangeForm} currentStep={stePdata[0]} />
-                        </div>
                     </div>
                 </div>
+            </div>
+            <div ref={form5} style={{
+                opacity: Tern(stePdata[0] === 5, 1.0, 0.4),
+                display: Tern(stePdata[1] >= 5, "block", "none")
+            }}>
+                <Results ratingMatrix={ratingMatrix} factors={factors} onChangeForm={onChangeForm} currentStep={stePdata[0]} />
             </div>
             <div style={{ height: "10vh" }}></div>
         </div>

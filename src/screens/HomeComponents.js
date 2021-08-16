@@ -87,8 +87,12 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
                     </div>
                     <p className="text-center text-danger my-3">{errorMessage}</p>
                     <div className="row">
-                        <button className={"mt-2 col-12 col-md-6 btn btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} disabled={currentStep !== 1} onClick={onChoiceNew}>Add a New Choice</button>
-                        <button className={"mt-2 col-12 col-md-6 btn btn rounded-1 btn-primary text-white"} disabled={currentStep !== 1} onClick={nextStepClick}>Next Step</button>
+                        <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
+                            <button className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} disabled={currentStep !== 1} onClick={onChoiceNew}>Add a New Choice</button>
+                        </div>
+                        <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
+                            <button className={"w-100 btn rounded-1 btn-primary text-white"} disabled={currentStep !== 1} onClick={nextStepClick}>Next Step</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -161,9 +165,15 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
                     </div>
                     <p className="text-center text-danger my-3">{errorMessage}</p>
                     <div className="row">
-                        <button disabled={currentStep !== 2} className="col-12 col-md-4 mt-2 btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}>Previous Step</button>
-                        <button disabled={currentStep !== 2} className={"col-12 col-md-4 mt-2 btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}>Add a New Factor</button>
-                        <button disabled={currentStep !== 2} className="col-12 col-md-4 mt-2 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                        <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
+                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}>Previous Step</button>
+                        </div>
+                        <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
+                            <button disabled={currentStep !== 2} className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}>Add a New Factor</button>
+                        </div>
+                        <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
+                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -244,8 +254,12 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                         }
                     </div>
                     <div className="row">
-                        <button disabled={currentStep !== 3} className="col-12 col-md-6 mt-2 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}>Previous Step</button>
-                        <button disabled={currentStep !== 3} className="col-12 col-md-6 mt-2 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                        <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
+                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}>Previous Step</button>
+                        </div>
+                        <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
+                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -375,8 +389,12 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                 </div>
                 <div className="container">
                     <div className="row">
-                        <button disabled={currentStep !== 4} className="col-12 col-md-6 mt-2 btn rounded-1 btn-outline-secondary" onClick={previousStepClick}>Previous Step</button>
-                        <button disabled={currentStep !== 4} className="col-12 col-md-6 mt-2 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Calculate</button>
+                        <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
+                            <button disabled={currentStep !== 4} className="w-100 btn rounded-1 btn-outline-secondary" onClick={previousStepClick}>Previous Step</button>
+                        </div>
+                        <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
+                            <button disabled={currentStep !== 4} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Calculate</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -389,6 +407,8 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
     const previousRatingMatrix = useRef(null);
     const previousFactors = useRef(null);
     const optionsArray = Object.keys(ratingMatrix);
+
+    const { breakpointSelector } = useResize();
 
     if (currentStep !== 5) {
         if (previousFactors.current == null)
@@ -421,50 +441,65 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
     }
 
     return (
-        <form className="d-block card rounded-2 shadow border-0 mb-3">
-            <div className="p-3">
-                <p className="fw-bold text-center m-0">Results say you should go for...</p>
+        <form className="d-block bg-white shadow border-0 mb-3">
+            <div className="p-3 p-md-4">
+                <p className="fw-bold text-center m-0">Results say you should go for...</p>
                 <h1 className="display-1 font-title text-primary text-center">{Object.keys(ratingMatrix)[maxI]}!</h1>
                 <hr />
-                <div className="">
-                    <table className="w-100 h6 table table-striped">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                {GenerateArray(optionsArray.length, (i => {
-                                    return <th key={i} className={`text-center py-2 ${Tern(i === maxI, "text-success", "")}`}> {optionsArray[i]}</th>
-                                }
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
+                <div className="">{
+                    (breakpointSelector(
+                        () => <div>
                             {
-                                GenerateArray(factors.length, (factorI) =>
-                                    <tr key={factorI}>
-                                        <td>{factors[factorI].name}</td>
-                                        {GenerateArray(optionsArray.length, (optionI) => {
-                                            return (<td key={optionI} className="text-center py-2">
-                                                {`${values[factorI][optionI]}`}
-                                            </td>)
-                                        })
-                                        }
-                                    </tr>)
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td></td>
-                                {GenerateArray(optionsArray.length, (optionI) => {
-                                    return (<td key={optionI} className={`text-center py-2 fw-bold ${Tern(optionI === maxI, "text-success", "")}`}>
-                                        {sums[optionI]}
-                                    </td>)
+                                GenerateArray(optionsArray.length, (i) => {
+                                    return <div key={i} className={`text-center ${Tern(i === maxI, "text-success", "")}`}>
+                                        {`${optionsArray[i]}: ${sums[i]}`}
+                                    </div>
                                 })
+                            }
+                            <hr />
+                        </div>
+                        , null,
+                        () => <table className="w-100 h6 table table-striped">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    {GenerateArray(optionsArray.length, (i => {
+                                        return <th key={i} className={`text-center py-2 ${Tern(i === maxI, "text-success", "")}`}> {optionsArray[i]}</th>
+                                    }
+                                    ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    GenerateArray(factors.length, (factorI) =>
+                                        <tr key={factorI}>
+                                            <td>{factors[factorI].name}</td>
+                                            {GenerateArray(optionsArray.length, (optionI) => {
+                                                return (<td key={optionI} className="text-center py-2">
+                                                    {`${values[factorI][optionI]}`}
+                                                </td>)
+                                            })
+                                            }
+                                        </tr>)
                                 }
-                            </tr>
-                        </tfoot>
-                    </table>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    {GenerateArray(optionsArray.length, (optionI) => {
+                                        return (<td key={optionI} className={`text-center py-2 fw-bold ${Tern(optionI === maxI, "text-success", "")}`}>
+                                            {sums[optionI]}
+                                        </td>)
+                                    })
+                                    }
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    ))()
+                }
                 </div>
-                <p className="text-muted fs-6">Factors set with higher importance contribute more to an option's total score.</p>
+                <p className={`text-muted fs-6 ${breakpointSelector("text-center", null, "")}`}>Factors set with higher importance contribute more to an option's total score.</p>
                 <div className="d-flex flex-row justify-content-center">
                     <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}>Reassess</button>
                     <span className="ps-2"></span>
