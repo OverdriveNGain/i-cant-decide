@@ -125,7 +125,7 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
             setErrorMessage("Remove any duplicate factors")
         else {
             setErrorMessage("")
-            upperSetFactors(factors.map((v, i) => { return { name: v, rating: 6 } }));
+            upperSetFactors(factors.map((v, i) => { return { name: v, rating: 3 } }));
             onChangeForm(e, 3);
         }
     }
@@ -226,7 +226,7 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                                 factors.length,
                                 (index) => <div key={index} className="d-flex flex-row py-1">
                                     <span className="w-50 text-end me-3">{factors[index].name}</span>
-                                    <input type="range" className="form-range" min="0" max="10" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
+                                    <input type="range" className="form-range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
                                 </div>
                             )
                         }
@@ -250,14 +250,14 @@ const getRatingMatrix = (choices, factors) => {
         let choice = choices[i]
         for (let i = 0; i < factors.length; i++) {
             let factorName = factors[i].name;
-            map[factorName] = 6;
+            map[factorName] = 3;
         }
 
         newRatingMatrix[choice] = map
     }
     return newRatingMatrix;
 }
-const LandingForm4 = ({ choices, factors, onChangeForm, currentStep }) => {
+const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRatingMatrix }) => {
     const [ratingMatrix, setRatingMatrix] = useState([])
 
     useEffect(() => {
@@ -276,8 +276,15 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep }) => {
         for (let property in ratingMatrix) {
             copiedRatingMatrix[property] = ({ ...ratingMatrix[property] });
         }
-        copiedRatingMatrix[choice][factorName] = rating;
+        copiedRatingMatrix[choice][factorName] = parseInt(rating);
         setRatingMatrix(copiedRatingMatrix)
+    }
+
+
+    const nextStepClick = (e) => {
+        e.preventDefault();
+        upperSetRatingMatrix(ratingMatrix);
+        onChangeForm(e, 5);
     }
 
     if (factors.length === 0)
@@ -304,7 +311,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep }) => {
                                                 const onChangeVal = (e) => modifyRatingMatrix(choices[choiceI], factors[factorI].name, e.target.value);
                                                 return <div key={choiceI} className="d-flex flex-row py-1">
                                                     <span className="w-50 text-end me-3">{choices[choiceI]}</span>
-                                                    <input type="range" className="form-range" min="0" max="10" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
+                                                    <input type="range" className="form-range" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
                                                 </div>
                                             }
                                         )
@@ -317,7 +324,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep }) => {
                 <div className="d-flex flex-row">
                     <button disabled={currentStep !== 4} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 3)}>Previous Step</button>
                     <span className="ps-2"></span>
-                    <button disabled={currentStep !== 4} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white">Next Step</button>
+                    <button disabled={currentStep !== 4} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Calculate</button>
                 </div>
             </div>
         </form>
@@ -325,4 +332,70 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep }) => {
     );
 }
 
-export { LandingBg, LandingForm1, LandingForm2, LandingForm3, LandingForm4 }
+const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
+    const optionsArray = Object.keys(ratingMatrix);
+
+    if (optionsArray.length === 0)
+        return <div></div>
+
+    const factorsArray = Object.keys(ratingMatrix[optionsArray[0]]);
+    const values = GenerateArray(factorsArray.length, (factorI) =>
+        GenerateArray(optionsArray.length, (optionI) =>
+            ratingMatrix[optionsArray[optionI]][factorsArray[factorI]] * factors.find((v) => v.name === factorsArray[factorI]).rating)
+    );
+    return (
+        <form className="d-block card rounded-2 shadow border-0 mb-3 mx-4">
+            <div className="p-3">
+                <div className="display-1 h1 fw-bold text-center text-primary font-title m-0">Results</div>
+                <hr />
+                <div className="mx-5">
+                    <table className="w-100 h4 table table-striped">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {GenerateArray(optionsArray.length, (i => {
+                                    console.log(`Will return:`)
+                                    console.log(optionsArray[i])
+                                    return <th key={i} className="text-center py-2">{optionsArray[i]}</th>
+                                }
+                                ))}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                GenerateArray(factors.length, (factorI) =>
+                                    <tr key={factorI}>
+                                        <td>{factors[factorI].name}</td>
+                                        {GenerateArray(optionsArray.length, (optionI) => {
+                                            return (<td key={optionI} className="text-center py-2">
+                                                {`${values[factorI][optionI]}`}
+                                            </td>)
+                                        })
+                                        }
+                                    </tr>)
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                {GenerateArray(optionsArray.length, (optionI) => {
+                                    return (<td key={optionI} className="text-center py-2 fw-bold">
+                                        {values.reduce((a, b, factorI) => a + b[optionI], 0)}
+                                    </td>)
+                                })
+                                }
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div className="d-flex flex-row">
+                    <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 4)}>Reassess</button>
+                    <span className="ps-2"></span>
+                    <div />
+                </div>
+            </div>
+        </form>
+    );
+}
+
+export { LandingBg, LandingForm1, LandingForm2, LandingForm3, LandingForm4, Results }

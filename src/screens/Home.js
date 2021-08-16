@@ -2,16 +2,18 @@ import { useState, useRef, useLayoutEffect } from "react";
 import { Pd, Tern } from "../helpers/func";
 import useResize from "../hooks/useResize";
 // import Math from 'math';
-import { LandingForm1, LandingForm2, LandingForm3, LandingForm4, LandingBg } from "./HomeComponents";
+import { LandingForm1, LandingForm2, LandingForm3, LandingForm4, LandingBg, Results } from "./HomeComponents";
 
 const Home = () => {
     const form1 = useRef(null)
     const form2 = useRef(null)
     const form3 = useRef(null)
     const form4 = useRef(null)
+    const form5 = useRef(null)
 
     const [choices, setChoices] = useState([])
     const [factors, setFactors] = useState([])
+    const [ratingMatrix, setRatingMatrix] = useState([])
 
     const [stePdata, setStepData] = useState([1, 1]); // step, and maxStep
 
@@ -32,8 +34,11 @@ const Home = () => {
             case 3:
                 form3.current.scrollIntoView(options);
                 break;
-            default:
+            case 4:
                 form4.current.scrollIntoView(options);
+                break;
+            default:
+                form5.current.scrollIntoView(options);
         }
     }, [stePdata])
 
@@ -69,12 +74,18 @@ const Home = () => {
                             opacity: Tern(stePdata[0] === 4, 1.0, 0.4),
                             display: Tern(stePdata[1] >= 4, "block", "none")
                         }}>
-                            <LandingForm4 factors={factors} choices={choices} onChangeForm={onChangeForm} currentStep={stePdata[0]} />
+                            <LandingForm4 factors={factors} choices={choices} onChangeForm={onChangeForm} currentStep={stePdata[0]} upperSetRatingMatrix={setRatingMatrix} />
+                        </div>
+                        <div ref={form5} style={{
+                            opacity: Tern(stePdata[0] === 5, 1.0, 0.4),
+                            display: Tern(stePdata[1] >= 5, "block", "none")
+                        }}>
+                            <Results ratingMatrix={ratingMatrix} factors={factors} onChangeForm={onChangeForm} currentStep={stePdata[0]} />
                         </div>
                     </div>
                 </div>
-                <div style={{ height: "10vh" }}></div>
             </div>
+            <div style={{ height: "10vh" }}></div>
         </div>
     );
 }
