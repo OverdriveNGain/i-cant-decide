@@ -460,7 +460,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                     </table>
                 </div>
                 <p className="text-muted mx-4 fs-6">Factors set with higher importance contribute more to an option's total score.</p>
-                <div className="d-flex flex-row">
+                <div className="d-flex flex-row justify-content-center">
                     <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}>Reassess</button>
                     <span className="ps-2"></span>
                     <div />
