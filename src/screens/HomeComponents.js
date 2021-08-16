@@ -136,7 +136,7 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
                 <span className="text-white">Step 2: Enter your factors</span>
             </div>
             <div className="p-3">
-                <p>e.g. Price, Color, Long-Term</p>
+                <p className="text-muted text-center o-50">e.g. Price, Color, Long-Term, etc.</p>
                 <div className="row justify-content-center mt-3">
                     <div className={breakpointSelector("col", null, "col-6")}>
                         {
@@ -235,8 +235,8 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                         {
                             GenerateArray(
                                 factors.length,
-                                (index) => <div key={index} className="d-flex flex-row py-1">
-                                    <span className="me-3 w-25 fw-bold text-end me-3">{factors[index].name}</span>
+                                (index) => <div key={index} className="d-flex flex-row py-1 align-items-center  ">
+                                    <span className="me-3 w-50 fw-bold text-end me-3">{factors[index].name}</span>
                                     <input className="w-25" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
                                     <span className="ms-3 w-50">{ratingToWords(factors[index].name, factors[index].rating)}</span>
                                 </div>
@@ -356,7 +356,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                             (choiceI) => {
                                                 const sliderVal = ratingMatrix[choices[choiceI]][factors[factorI].name];
                                                 const onChangeVal = (e) => modifyRatingMatrix(choices[choiceI], factors[factorI].name, e.target.value);
-                                                return <div key={choiceI} className="d-flex flex-row py-1">
+                                                return <div key={choiceI} className="d-flex flex-row py-1 align-items-center">
                                                     <span className="me-3 w-25 fw-bold text-end me-3">{choices[choiceI]}</span>
                                                     <input type="range" className="w-25" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
                                                     <span className="ms-3 w-50">{ratingToWords(sliderVal)}</span>
