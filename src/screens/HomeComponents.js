@@ -255,14 +255,21 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
     );
 }
 
-const getRatingMatrix = (choices, factors) => {
+const getRatingMatrix = (choices, factors, oldRatingMatrix) => {
     let newRatingMatrix = {}
     for (let i = 0; i < choices.length; i++) {
         let map = {};
         let choice = choices[i]
-        for (let i = 0; i < factors.length; i++) {
-            let factorName = factors[i].name;
-            map[factorName] = 3;
+        for (let j = 0; j < factors.length; j++) {
+            let factorName = factors[j].name;
+            let b1 = oldRatingMatrix[choice] != null
+            let b2 = false;
+            if (b1)
+                b2 = oldRatingMatrix[choice][factorName] != null;
+            if (b1 && b2)
+                map[factorName] = oldRatingMatrix[choice][factorName]
+            else
+                map[factorName] = 3;
         }
 
         newRatingMatrix[choice] = map
@@ -270,7 +277,8 @@ const getRatingMatrix = (choices, factors) => {
     return newRatingMatrix;
 }
 const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRatingMatrix }) => {
-    const [ratingMatrix, setRatingMatrix] = useState([])
+    const oldRatingMatrix = useRef({});
+    const [ratingMatrix, setRatingMatrix] = useState({})
 
     const modifyRatingMatrix = (choice, factorName, rating) => {
         let copiedRatingMatrix = {};
@@ -282,8 +290,14 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
     }
     const nextStepClick = (e) => {
         e.preventDefault();
+        oldRatingMatrix.current = ratingMatrix;
         upperSetRatingMatrix(ratingMatrix);
         onChangeForm(e, 5);
+    }
+    const previousStepClick = (e) => {
+        e.preventDefault(e);
+        oldRatingMatrix.current = ratingMatrix;
+        onChangeForm(e, 3);
     }
     const ratingMatrixIsUpdated = () => {
         const ratingMatrixKeys = Object.keys(ratingMatrix);
@@ -304,7 +318,6 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
         }
         return true;
     }
-
     const ratingToWords = (rating) => {
         const ratings = [
             "🤮 Very Bad ",
@@ -318,7 +331,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
     }
 
     useEffect(() => {
-        setRatingMatrix(getRatingMatrix(choices, factors))
+        setRatingMatrix(getRatingMatrix(choices, factors, oldRatingMatrix.current))
     }, [choices, factors])
 
     if (!ratingMatrixIsUpdated())
@@ -357,7 +370,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                     })
                 }
                 <div className="d-flex flex-row">
-                    <button disabled={currentStep !== 4} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 3)}>Previous Step</button>
+                    <button disabled={currentStep !== 4} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={previousStepClick}>Previous Step</button>
                     <span className="ps-2"></span>
                     <button disabled={currentStep !== 4} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Calculate</button>
                 </div>
