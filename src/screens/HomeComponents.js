@@ -88,10 +88,10 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
                     <p className="text-center text-danger my-3">{errorMessage}</p>
                     <div className="row">
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} disabled={currentStep !== 1} onClick={onChoiceNew}>Add a New Choice</button>
+                            <button className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} disabled={currentStep !== 1} onClick={onChoiceNew}><i className="bi bi-plus-lg me-2"></i> Add a New Choice</button>
                         </div>
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button className={"w-100 btn rounded-1 btn-primary text-white"} disabled={currentStep !== 1} onClick={nextStepClick}>Next Step</button>
+                            <button className={"w-100 btn rounded-1 btn-primary text-white"} disabled={currentStep !== 1} onClick={nextStepClick}><i className="bi bi-arrow-right me-2"></i>Next Step</button>
                         </div>
                     </div>
                 </div>
@@ -166,13 +166,13 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
                     <p className="text-center text-danger my-3">{errorMessage}</p>
                     <div className="row">
                         <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}>Previous Step</button>
+                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}><i className="bi bi-arrow-left me-2"></i>Previous Step</button>
                         </div>
                         <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 2} className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}>Add a New Factor</button>
+                            <button disabled={currentStep !== 2} className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}><i className="bi bi-plus-lg me-2"></i>Add a New Factor</button>
                         </div>
                         <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2"></i>Next Step</button>
                         </div>
                     </div>
                 </div>
@@ -255,10 +255,10 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                     </div>
                     <div className="row">
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}>Previous Step</button>
+                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}><i className="bi bi-arrow-left me-2"></i>Previous Step</button>
                         </div>
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2"></i>Next Step</button>
                         </div>
                     </div>
                 </div>
@@ -394,10 +394,10 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                 <div className="container">
                     <div className="row">
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 4} className="w-100 btn rounded-1 btn-outline-secondary" onClick={previousStepClick}>Previous Step</button>
+                            <button disabled={currentStep !== 4} className="w-100 btn rounded-1 btn-outline-secondary" onClick={previousStepClick}><i className="bi bi-arrow-left me-2"></i>Previous Step</button>
                         </div>
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 4} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Calculate</button>
+                            <button disabled={currentStep !== 4} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-gear-fill me-2"></i>Calculate</button>
                         </div>
                     </div>
                 </div>
@@ -505,7 +505,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                 </div>
                 <p className={`text-muted fs-6 ${breakpointSelector("text-center", null, "")}`}>Factors set with higher importance contribute more to an option's total score.</p>
                 <div className="d-flex flex-row justify-content-center">
-                    <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}>Reassess</button>
+                    <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}><i className="bi bi-skip-backward-fill me-2"></i>Reassess</button>
                     <span className="ps-2"></span>
                     <div />
                 </div>
