@@ -375,8 +375,12 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                                 const onChangeVal = (e) => modifyRatingMatrix(choices[choiceI], factors[factorI].name, e.target.value);
                                                 return (
                                                     <div key={choiceI} className="d-flex flex-row align-items-center mb-2">
-                                                        <span className="fw-bold text-center flex-grow-1" style={{ width: breakpointSelector("auto", null, "25%") }} >{choices[choiceI]}</span>
-                                                        <input type="range" className="px-2" style={{ width: breakpointSelector("50%", null, "25%") }} min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
+                                                        <div className="container p-0 ">
+                                                            <div className="row m-0">
+                                                                <span className="col-6 p-0 fw-bold text-center" >{choices[choiceI]}</span>
+                                                                <input type="range" className="col-6" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
+                                                            </div>
+                                                        </div>
                                                         <span className={breakpointSelector("", null, "w-50")}>{ratingToWords(sliderVal)}</span>
                                                     </div>);
                                             }
