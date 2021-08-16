@@ -389,7 +389,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                         )
                                     }
                                 </div>
-                                <hr />
+                                <hr className="my-2" />
                             </div>
                         })
                     }
@@ -449,7 +449,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
 
     return (
         <form className="d-block bg-white shadow border-0 mb-3">
-            <div className="p-3 p-md-4">
+            <div className="p-3 p-md-5">
                 <p className="fw-bold text-center m-0">Results say you should go for...</p>
                 <h1 className="display-1 font-title text-primary text-center">{Object.keys(ratingMatrix)[maxI]}!</h1>
                 <hr />
@@ -508,7 +508,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                 </div>
                 <p className={`text-muted fs-6 ${breakpointSelector("text-center", null, "")}`}>Factors set with higher importance contribute more to an option's total score.</p>
                 <div className="d-flex flex-row justify-content-center">
-                    <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}><i className="bi bi-skip-backward-fill me-2"></i>Reassess</button>
+                    <button disabled={currentStep !== 5} className="mt-4 w-75 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}><i className="bi bi-skip-backward-fill me-2"></i>Reassess</button>
                     <span className="ps-2"></span>
                     <div />
                 </div>
