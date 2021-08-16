@@ -59,36 +59,37 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
         }
     }
     return (
-        <form className="d-block card rounded-2 shadow border-0 mb-3">
-            <div className="bg-secondary rounded-top rounded-sm py-2 px-3 text-center">
+        <form className="d-block card rounded shadow border-0 mb-3">
+            <div className="bg-secondary rounded-top py-2 px-3 text-center">
                 <span className="text-white">Step 1: Enter your choices</span>
             </div>
             <div className="p-3">
-                <div className="row justify-content-center mt-3">
-                    <div className={breakpointSelector("col", null, "col-6")}>
-                        {
-                            GenerateArray(
-                                choices.length,
-                                (index) => <div key={index} className="d-flex flex-row py-1">
-                                    <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)}></input>
-                                    {
-                                        Tern(index > 1,
-                                            <button disabled={currentStep !== 1} className="rounded-circle btn" onClick={(e) => { onChoiceRemove(e, index); }} >
-                                                <i className="bi bi-x-lg" />
-                                            </button>,
-                                            fieldSpacer,
-                                        )
-                                    }
-                                </div>
-                            )
-                        }
+                <div className="container">
+                    <div className="row justify-content-center">
+                        <div className={`p-0 ${breakpointSelector("col", null, "col-6")}`}>
+                            {
+                                GenerateArray(
+                                    choices.length,
+                                    (index) => <div key={index} className="d-flex flex-row py-1">
+                                        <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)}></input>
+                                        {
+                                            Tern(index > 1,
+                                                <button disabled={currentStep !== 1} className="rounded-circle btn" onClick={(e) => { onChoiceRemove(e, index); }} >
+                                                    <i className="bi bi-x-lg" />
+                                                </button>,
+                                                fieldSpacer,
+                                            )
+                                        }
+                                    </div>
+                                )
+                            }
+                        </div>
                     </div>
-                </div>
-                <p className="text-center text-danger my-3">{errorMessage}</p>
-                <div className="d-flex flex-row">
-                    <button disabled={currentStep !== 1} className={"mt-4 w-50 btn btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} onClick={onChoiceNew}>Add a New Choice</button>
-                    <span className="ps-2"></span>
-                    <button disabled={currentStep !== 1} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                    <p className="text-center text-danger my-3">{errorMessage}</p>
+                    <div className="row">
+                        <button className={"mt-2 col-12 col-md-6 btn btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} disabled={currentStep !== 1} onClick={onChoiceNew}>Add a New Choice</button>
+                        <button className={"mt-2 col-12 col-md-6 btn btn rounded-1 btn-primary text-white"} disabled={currentStep !== 1} onClick={nextStepClick}>Next Step</button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -136,34 +137,34 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
                 <span className="text-white">Step 2: Enter your factors</span>
             </div>
             <div className="p-3">
-                <p className="text-muted text-center o-50">e.g. Price, Color, Long-Term, etc.</p>
-                <div className="row justify-content-center mt-3">
-                    <div className={breakpointSelector("col", null, "col-6")}>
-                        {
-                            GenerateArray(
-                                factors.length,
-                                (index) => <div key={index} className="d-flex flex-row py-1">
-                                    <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
-                                    {
-                                        Tern(index > 1,
-                                            <button disabled={currentStep !== 2} className="rounded-circle btn" onClick={(e) => { onFactorRemove(e, index); }} >
-                                                <i className="bi bi-x-lg" />
-                                            </button>,
-                                            fieldSpacer,
-                                        )
-                                    }
-                                </div>
-                            )
-                        }
+                <div className="container">
+                    <p className="text-muted text-center o-50">e.g. Price, Color, Long-Term, etc.</p>
+                    <div className="row justify-content-center mt-3">
+                        <div className={`p-0 ${breakpointSelector("col", null, "col-6")}`}>
+                            {
+                                GenerateArray(
+                                    factors.length,
+                                    (index) => <div key={index} className="d-flex flex-row py-1">
+                                        <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
+                                        {
+                                            Tern(index > 1,
+                                                <button disabled={currentStep !== 2} className="rounded-circle btn" onClick={(e) => { onFactorRemove(e, index); }} >
+                                                    <i className="bi bi-x-lg" />
+                                                </button>,
+                                                fieldSpacer,
+                                            )
+                                        }
+                                    </div>
+                                )
+                            }
+                        </div>
                     </div>
-                </div>
-                <p className="text-center text-danger my-3">{errorMessage}</p>
-                <div className="d-flex flex-row">
-                    <button disabled={currentStep !== 2} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}>Previous Step</button>
-                    <span className="ps-2"></span>
-                    <button disabled={currentStep !== 2} className={"mt-4 w-50 btn btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}>Add a New Factor</button>
-                    <span className="ps-2"></span>
-                    <button disabled={currentStep !== 2} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                    <p className="text-center text-danger my-3">{errorMessage}</p>
+                    <div className="row">
+                        <button disabled={currentStep !== 2} className="col-12 col-md-4 mt-2 btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}>Previous Step</button>
+                        <button disabled={currentStep !== 2} className={"col-12 col-md-4 mt-2 btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}>Add a New Factor</button>
+                        <button disabled={currentStep !== 2} className="col-12 col-md-4 mt-2 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -192,8 +193,6 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
             setFactors(temp);
         }
     }, [initialFactors])
-
-    const { breakpointSelector } = useResize();
 
     const onFactorRatingChange = (e, factor) => setFactors(factors.map((v, i) => Tern(v.name === factor, { name: factor, rating: parseInt(e.target.value) }, factors[i])));
 
@@ -230,24 +229,24 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                 <span className="text-white">Step 3: Rate your factors' importance</span>
             </div>
             <div className="p-3">
-                <div className="row justify-content-center mt-1">
-                    <div className={breakpointSelector("col")}>
+                <div className="container">
+                    <div>
                         {
                             GenerateArray(
                                 factors.length,
-                                (index) => <div key={index} className="d-flex flex-row py-1 align-items-center  ">
-                                    <span className="me-3 w-50 fw-bold text-end me-3">{factors[index].name}</span>
-                                    <input className="w-25" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
-                                    <span className="ms-3 w-50">{ratingToWords(factors[index].name, factors[index].rating)}</span>
+                                (index) => <div key={index} className="row align-items-center">
+                                    <span className="p-0 col-6 col-md-3 fw-bold text-end text-center">{factors[index].name}</span>
+                                    <input className="p-0 col-6 col-md-3" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
+                                    <span className="p-0 col-12 col-md-6 text-center">{ratingToWords(factors[index].name, factors[index].rating)}</span>
+                                    <hr className="my-2" />
                                 </div>
                             )
                         }
                     </div>
-                </div>
-                <div className="d-flex flex-row">
-                    <button disabled={currentStep !== 3} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={lastStepClick}>Previous Step</button>
-                    <span className="ps-2"></span>
-                    <button disabled={currentStep !== 3} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                    <div className="row">
+                        <button disabled={currentStep !== 3} className="col-12 col-md-6 mt-2 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}>Previous Step</button>
+                        <button disabled={currentStep !== 3} className="col-12 col-md-6 mt-2 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Next Step</button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -279,6 +278,7 @@ const getRatingMatrix = (choices, factors, oldRatingMatrix) => {
 const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRatingMatrix }) => {
     const oldRatingMatrix = useRef({});
     const [ratingMatrix, setRatingMatrix] = useState({})
+    const { breakpointSelector } = useResize();
 
     const modifyRatingMatrix = (choice, factorName, rating) => {
         let copiedRatingMatrix = {};
@@ -319,14 +319,17 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
         return true;
     }
     const ratingToWords = (rating) => {
+        const emojis = ["🤮", "😒", "😐", "😋", "🤩"];
         const ratings = [
-            "🤮 Very Bad ",
-            "😒 Bad",
-            "😐 Neutral",
-            "😋 Good",
-            "🤩 Excellent"];
+            "Very Bad ",
+            "Bad",
+            "Neutral",
+            "Good",
+            "Excellent"];
+        if (breakpointSelector(true, null, false))
+            return (<span className="text-muted">{`${emojis[parseInt(rating) - 1]}`}</span>)
         return (
-            <span className="text-muted">{ratings[parseInt(rating) - 1]}</span>
+            <span className="text-muted">{`${emojis[parseInt(rating) - 1]} ${ratings[parseInt(rating) - 1]}`}</span>
         )
     }
 
@@ -343,36 +346,38 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                 <span className="text-white">Step 4: Rate your choices</span>
             </div>
             <div className="p-3">
-                {
-                    GenerateArray(factors.length, (factorI) => {
-                        return <div key={factorI}>
-                            {Tern(factorI === 0, <div></div>, <hr />)}
-                            <h6 className="text-center text-muted">{factors[factorI].name}</h6>
-                            <div className="row justify-content-center mt-3">
-                                <div className="col">
+                <div>
+                    {
+                        GenerateArray(factors.length, (factorI) => {
+                            return <div key={factorI}>
+                                {Tern(factorI === 0, <div></div>, <hr />)}
+                                <h6 className="text-center text-muted">{factors[factorI].name}</h6>
+                                <div className="row justify-content-center mt-3">
                                     {
                                         GenerateArray(
                                             choices.length,
                                             (choiceI) => {
                                                 const sliderVal = ratingMatrix[choices[choiceI]][factors[factorI].name];
                                                 const onChangeVal = (e) => modifyRatingMatrix(choices[choiceI], factors[factorI].name, e.target.value);
-                                                return <div key={choiceI} className="d-flex flex-row py-1 align-items-center">
-                                                    <span className="me-3 w-25 fw-bold text-end me-3">{choices[choiceI]}</span>
-                                                    <input type="range" className="w-25" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
-                                                    <span className="ms-3 w-50">{ratingToWords(sliderVal)}</span>
-                                                </div>
+                                                return (
+                                                    <div key={choiceI} className="d-flex flex-row align-items-center mb-2">
+                                                        <span className="fw-bold text-center flex-grow-1" style={{ width: breakpointSelector("auto", null, "25%") }} >{choices[choiceI]}</span>
+                                                        <input type="range" className="px-2" style={{ width: breakpointSelector("50%", null, "25%") }} min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
+                                                        <span className={breakpointSelector("", null, "w-50")}>{ratingToWords(sliderVal)}</span>
+                                                    </div>);
                                             }
                                         )
                                     }
                                 </div>
                             </div>
-                        </div>
-                    })
-                }
-                <div className="d-flex flex-row">
-                    <button disabled={currentStep !== 4} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={previousStepClick}>Previous Step</button>
-                    <span className="ps-2"></span>
-                    <button disabled={currentStep !== 4} className="mt-4 w-50 btn btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Calculate</button>
+                        })
+                    }
+                </div>
+                <div className="container">
+                    <div className="row">
+                        <button disabled={currentStep !== 4} className="col-12 col-md-6 mt-2 btn rounded-1 btn-outline-secondary" onClick={previousStepClick}>Previous Step</button>
+                        <button disabled={currentStep !== 4} className="col-12 col-md-6 mt-2 btn rounded-1 btn-primary text-white" onClick={nextStepClick}>Calculate</button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -416,12 +421,12 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
     }
 
     return (
-        <form className="d-block card rounded-2 shadow border-0 mb-3 mx-4">
+        <form className="d-block card rounded-2 shadow border-0 mb-3">
             <div className="p-3">
                 <p className="fw-bold text-center m-0">Results say you should go for...</p>
                 <h1 className="display-1 font-title text-primary text-center">{Object.keys(ratingMatrix)[maxI]}!</h1>
                 <hr />
-                <div className="mx-5">
+                <div className="">
                     <table className="w-100 h6 table table-striped">
                         <thead>
                             <tr>
@@ -459,7 +464,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                         </tfoot>
                     </table>
                 </div>
-                <p className="text-muted mx-4 fs-6">Factors set with higher importance contribute more to an option's total score.</p>
+                <p className="text-muted fs-6">Factors set with higher importance contribute more to an option's total score.</p>
                 <div className="d-flex flex-row justify-content-center">
                     <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}>Reassess</button>
                     <span className="ps-2"></span>

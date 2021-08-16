@@ -1993,7 +1993,7 @@ progress {
   background-clip: padding-box;
   border: 1px solid #ced4da;
   appearance: none;
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
@@ -2123,7 +2123,7 @@ progress {
   min-height: calc(1.5em + 1rem + 2px);
   padding: 0.5rem 1rem;
   font-size: calc(1.2625rem + 0.15vw);
-  border-radius: 3rem;
+  border-radius: 2rem;
 }
 
 @media (min-width: 1200px) {
@@ -2168,12 +2168,12 @@ textarea.form-control-lg {
 
 .form-control-color::-moz-color-swatch {
   height: 1.5em;
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
 }
 
 .form-control-color::-webkit-color-swatch {
   height: 1.5em;
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
 }
 
 .form-select {
@@ -2191,7 +2191,7 @@ textarea.form-control-lg {
   background-position: right 0.75rem center;
   background-size: 16px 12px;
   border: 1px solid #ced4da;
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   appearance: none;
 }
@@ -2562,7 +2562,7 @@ textarea.form-control-lg {
   white-space: nowrap;
   background-color: #e9ecef;
   border: 1px solid #ced4da;
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
 }
 
 .input-group-lg > .form-control,
@@ -2571,7 +2571,7 @@ textarea.form-control-lg {
 .input-group-lg > .btn {
   padding: 0.5rem 1rem;
   font-size: calc(1.2625rem + 0.15vw);
-  border-radius: 3rem;
+  border-radius: 2rem;
 }
 
 @media (min-width: 1200px) {
@@ -2634,7 +2634,7 @@ textarea.form-control-lg {
   font-size: 0.9625rem;
   color: #fff;
   background-color: rgba(25, 135, 84, 0.9);
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
 }
 
 .was-validated :valid ~ .valid-feedback,
@@ -2730,7 +2730,7 @@ textarea.form-control-lg {
   font-size: 0.9625rem;
   color: #fff;
   background-color: rgba(220, 53, 69, 0.9);
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
 }
 
 .was-validated :invalid ~ .invalid-feedback,
@@ -2821,7 +2821,7 @@ textarea.form-control-lg {
   border: 1px solid transparent;
   padding: 0.375rem 0.75rem;
   font-size: 1.1rem;
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
@@ -3431,7 +3431,7 @@ fieldset:disabled .btn {
 .btn-lg, .btn-group-lg > .btn {
   padding: 0.5rem 1rem;
   font-size: calc(1.2625rem + 0.15vw);
-  border-radius: 3rem;
+  border-radius: 2rem;
 }
 
 @media (min-width: 1200px) {
@@ -3528,7 +3528,7 @@ fieldset:disabled .btn {
   background-color: #fff;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.15);
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
 }
 
 .dropdown-menu[data-bs-popper] {
@@ -3937,7 +3937,7 @@ fieldset:disabled .btn {
   background-color: #fff;
   background-clip: border-box;
   border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 1.2rem;
+  border-radius: 0.9rem;
 }
 
 .card > hr {
@@ -3952,14 +3952,14 @@ fieldset:disabled .btn {
 
 .card > .list-group:first-child {
   border-top-width: 0;
-  border-top-left-radius: calc(1.2rem - 1px);
-  border-top-right-radius: calc(1.2rem - 1px);
+  border-top-left-radius: calc(0.9rem - 1px);
+  border-top-right-radius: calc(0.9rem - 1px);
 }
 
 .card > .list-group:last-child {
   border-bottom-width: 0;
-  border-bottom-right-radius: calc(1.2rem - 1px);
-  border-bottom-left-radius: calc(1.2rem - 1px);
+  border-bottom-right-radius: calc(0.9rem - 1px);
+  border-bottom-left-radius: calc(0.9rem - 1px);
 }
 
 .card > .card-header + .list-group,
@@ -3997,7 +3997,7 @@ fieldset:disabled .btn {
 }
 
 .card-header:first-child {
-  border-radius: calc(1.2rem - 1px) calc(1.2rem - 1px) 0 0;
+  border-radius: calc(0.9rem - 1px) calc(0.9rem - 1px) 0 0;
 }
 
 .card-footer {
@@ -4007,7 +4007,7 @@ fieldset:disabled .btn {
 }
 
 .card-footer:last-child {
-  border-radius: 0 0 calc(1.2rem - 1px) calc(1.2rem - 1px);
+  border-radius: 0 0 calc(0.9rem - 1px) calc(0.9rem - 1px);
 }
 
 .card-header-tabs {
@@ -4029,7 +4029,7 @@ fieldset:disabled .btn {
   bottom: 0;
   left: 0;
   padding: 1rem;
-  border-radius: calc(1.2rem - 1px);
+  border-radius: calc(0.9rem - 1px);
 }
 
 .card-img,
@@ -4040,14 +4040,14 @@ fieldset:disabled .btn {
 
 .card-img,
 .card-img-top {
-  border-top-left-radius: calc(1.2rem - 1px);
-  border-top-right-radius: calc(1.2rem - 1px);
+  border-top-left-radius: calc(0.9rem - 1px);
+  border-top-right-radius: calc(0.9rem - 1px);
 }
 
 .card-img,
 .card-img-bottom {
-  border-bottom-right-radius: calc(1.2rem - 1px);
-  border-bottom-left-radius: calc(1.2rem - 1px);
+  border-bottom-right-radius: calc(0.9rem - 1px);
+  border-bottom-left-radius: calc(0.9rem - 1px);
 }
 
 .card-group > .card {
@@ -5585,7 +5585,7 @@ fieldset:disabled .btn {
 }
 
 .rounded {
-  border-radius: 1.2rem !important;
+  border-radius: 0.9rem !important;
 }
 
 .rounded-0 {
@@ -5597,11 +5597,11 @@ fieldset:disabled .btn {
 }
 
 .rounded-2 {
-  border-radius: 1.2rem !important;
+  border-radius: 0.9rem !important;
 }
 
 .rounded-3 {
-  border-radius: 3rem !important;
+  border-radius: 2rem !important;
 }
 
 .rounded-circle {
@@ -5613,23 +5613,23 @@ fieldset:disabled .btn {
 }
 
 .rounded-top {
-  border-top-left-radius: 1.2rem !important;
-  border-top-right-radius: 1.2rem !important;
+  border-top-left-radius: 0.9rem !important;
+  border-top-right-radius: 0.9rem !important;
 }
 
 .rounded-end {
-  border-top-right-radius: 1.2rem !important;
-  border-bottom-right-radius: 1.2rem !important;
+  border-top-right-radius: 0.9rem !important;
+  border-bottom-right-radius: 0.9rem !important;
 }
 
 .rounded-bottom {
-  border-bottom-right-radius: 1.2rem !important;
-  border-bottom-left-radius: 1.2rem !important;
+  border-bottom-right-radius: 0.9rem !important;
+  border-bottom-left-radius: 0.9rem !important;
 }
 
 .rounded-start {
-  border-bottom-left-radius: 1.2rem !important;
-  border-top-left-radius: 1.2rem !important;
+  border-bottom-left-radius: 0.9rem !important;
+  border-top-left-radius: 0.9rem !important;
 }
 
 .visible {
