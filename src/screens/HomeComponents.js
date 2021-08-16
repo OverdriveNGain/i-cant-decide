@@ -367,7 +367,6 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                     {
                         GenerateArray(factors.length, (factorI) => {
                             return <div key={factorI}>
-                                {Tern(factorI === 0, null, <hr />)}
                                 <h6 className="text-center text-muted">{factors[factorI].name}</h6>
                                 <div className="row justify-content-center mt-3">
                                     {
@@ -384,12 +383,13 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                                                 <input type="range" className="col-6" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
                                                             </div>
                                                         </div>
-                                                        <span className={breakpointSelector("", null, "w-50")}>{ratingToWords(sliderVal)}</span>
+                                                        <span className={breakpointSelector("", null, "w-50 text-center")}>{ratingToWords(sliderVal)}</span>
                                                     </div>);
                                             }
                                         )
                                     }
                                 </div>
+                                <hr />
                             </div>
                         })
                     }
