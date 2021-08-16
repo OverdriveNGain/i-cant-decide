@@ -189,24 +189,6 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
     const lastFactors = useRef(null);
     const [factors, setFactors] = useState([])
 
-    useEffect(() => {
-        if (lastFactors.current === null) {
-            setFactors(initialFactors);
-        }
-        else {
-            const temp = [];
-            for (let newFactorI = 0; newFactorI < initialFactors.length; newFactorI++) {
-                let factorName = initialFactors[newFactorI].name;
-                let oldIndex = lastFactors.current.findIndex((v, i) => v.name === factorName);
-                if (oldIndex !== -1)
-                    temp.push(lastFactors.current[oldIndex])
-                else
-                    temp.push(initialFactors[newFactorI])
-            }
-            setFactors(temp);
-        }
-    }, [initialFactors])
-
     const onFactorRatingChange = (e, factor) => setFactors(factors.map((v, i) => Tern(v.name === factor, { name: factor, rating: parseInt(e.target.value) }, factors[i])));
 
     const nextStepClick = (e) => {
@@ -233,8 +215,26 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
         )
     }
 
+    useEffect(() => {
+        if (lastFactors.current === null) {
+            setFactors(initialFactors);
+        }
+        else {
+            const temp = [];
+            for (let newFactorI = 0; newFactorI < initialFactors.length; newFactorI++) {
+                let factorName = initialFactors[newFactorI].name;
+                let oldIndex = lastFactors.current.findIndex((v, i) => v.name === factorName);
+                if (oldIndex !== -1)
+                    temp.push(lastFactors.current[oldIndex])
+                else
+                    temp.push(initialFactors[newFactorI])
+            }
+            setFactors(temp);
+        }
+    }, [initialFactors])
+
     if (initialFactors.length === 0)
-        return <div></div>
+        return null
 
     return (
         <form disabled={currentStep === 2} className="d-block card rounded-2 shadow border-0 mb-3">
@@ -355,7 +355,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
     }, [choices, factors])
 
     if (!ratingMatrixIsUpdated())
-        return <div></div>
+        return null
 
     return (
         <form disabled={currentStep === 4} className="d-block card rounded-2 shadow border-0 mb-3">
@@ -367,7 +367,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                     {
                         GenerateArray(factors.length, (factorI) => {
                             return <div key={factorI}>
-                                {Tern(factorI === 0, <div></div>, <hr />)}
+                                {Tern(factorI === 0, null, <hr />)}
                                 <h6 className="text-center text-muted">{factors[factorI].name}</h6>
                                 <div className="row justify-content-center mt-3">
                                     {
@@ -379,7 +379,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                                 return (
                                                     <div key={choiceI} className="d-flex flex-row align-items-center mb-2">
                                                         <div className="container p-0 ">
-                                                            <div className="row m-0">
+                                                            <div className="row m-0 align-items-center">
                                                                 <span className="col-6 p-0 fw-bold text-center" >{choices[choiceI]}</span>
                                                                 <input type="range" className="col-6" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
                                                             </div>
@@ -419,7 +419,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
 
     if (currentStep !== 5) {
         if (previousFactors.current == null)
-            return <div></div>
+            return null
         ratingMatrix = previousRatingMatrix.current;
         factors = previousFactors.current;
     }
