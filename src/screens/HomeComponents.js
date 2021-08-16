@@ -2,7 +2,7 @@ import useResize from "../hooks/useResize";
 import { maxChoices, maxFactors } from "../helpers/constants";
 import Sketch from "react-p5";
 import { GenerateArray, Pd, Tern } from "../helpers/func";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const LandingBg = (props) => {
     const setup = (p5) => {
