@@ -2,7 +2,7 @@ import useResize from "../hooks/useResize";
 import { maxChoices, maxFactors } from "../helpers/constants";
 import Sketch from "react-p5";
 import { GenerateArray, Pd, Tern } from "../helpers/func";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 const LandingBg = (props) => {
     const setup = (p5) => {
@@ -209,6 +209,18 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
         onChangeForm(e, 2);
     }
 
+    const ratingToWords = (factor, rating) => {
+        const ratings = [
+            " is not that important ",
+            " is a little important",
+            " is somewhat important",
+            " is important",
+            " is very important"];
+        return (
+            <span className="text-muted">{ratings[parseInt(rating) - 1]}</span>
+        )
+    }
+
     if (initialFactors.length === 0)
         return <div></div>
 
@@ -218,15 +230,15 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                 <span className="text-white">Step 3: Rate your factors' importance</span>
             </div>
             <div className="p-3">
-                <p>For example, you can rate your </p>
-                <div className="row justify-content-center mt-3">
+                <div className="row justify-content-center mt-1">
                     <div className={breakpointSelector("col")}>
                         {
                             GenerateArray(
                                 factors.length,
                                 (index) => <div key={index} className="d-flex flex-row py-1">
-                                    <span className="w-50 text-end me-3">{factors[index].name}</span>
-                                    <input type="range" className="form-range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
+                                    <span className="me-3 w-25 fw-bold text-end me-3">{factors[index].name}</span>
+                                    <input className="w-25" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
+                                    <span className="ms-3 w-50">{ratingToWords(factors[index].name, factors[index].rating)}</span>
                                 </div>
                             )
                         }
@@ -293,6 +305,18 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
         return true;
     }
 
+    const ratingToWords = (rating) => {
+        const ratings = [
+            "🤮 Very Bad ",
+            "😒 Bad",
+            "😐 Neutral",
+            "😋 Good",
+            "🤩 Excellent"];
+        return (
+            <span className="text-muted">{ratings[parseInt(rating) - 1]}</span>
+        )
+    }
+
     useEffect(() => {
         setRatingMatrix(getRatingMatrix(choices, factors))
     }, [choices, factors])
@@ -310,7 +334,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                     GenerateArray(factors.length, (factorI) => {
                         return <div key={factorI}>
                             {Tern(factorI === 0, <div></div>, <hr />)}
-                            <h3 className="text-center">{factors[factorI].name}</h3>
+                            <h6 className="text-center text-muted">{factors[factorI].name}</h6>
                             <div className="row justify-content-center mt-3">
                                 <div className="col">
                                     {
@@ -320,8 +344,9 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                                 const sliderVal = ratingMatrix[choices[choiceI]][factors[factorI].name];
                                                 const onChangeVal = (e) => modifyRatingMatrix(choices[choiceI], factors[factorI].name, e.target.value);
                                                 return <div key={choiceI} className="d-flex flex-row py-1">
-                                                    <span className="w-50 text-end me-3">{choices[choiceI]}</span>
-                                                    <input type="range" className="form-range" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
+                                                    <span className="me-3 w-25 fw-bold text-end me-3">{choices[choiceI]}</span>
+                                                    <input type="range" className="w-25" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
+                                                    <span className="ms-3 w-50">{ratingToWords(sliderVal)}</span>
                                                 </div>
                                             }
                                         )
@@ -365,10 +390,23 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
         onChangeForm(e, 4);
     }
 
+    let sums = GenerateArray(optionsArray.length, (optionI) =>
+        values.reduce((a, b, factorI) => a + b[optionI], 0));
+
+    let max = sums[0];
+    let maxI = 0;
+    for (let i = 1; i < sums.length; i++) {
+        if (sums[i] > max) {
+            max = sums[i];
+            maxI = i;
+        }
+    }
+
     return (
         <form className="d-block card rounded-2 shadow border-0 mb-3 mx-4">
             <div className="p-3">
-                <div className="display-1 h1 fw-bold text-center text-primary font-title m-0">Results</div>
+                <p className="fw-bold text-center m-0">Results say you should go for...</p>
+                <h1 className="display-1 font-title text-primary text-center">{Object.keys(ratingMatrix)[maxI]}!</h1>
                 <hr />
                 <div className="mx-5">
                     <table className="w-100 h4 table table-striped">
@@ -400,7 +438,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                 <td></td>
                                 {GenerateArray(optionsArray.length, (optionI) => {
                                     return (<td key={optionI} className="text-center py-2 fw-bold">
-                                        {values.reduce((a, b, factorI) => a + b[optionI], 0)}
+                                        {sums[optionI]}
                                     </td>)
                                 })
                                 }
@@ -408,6 +446,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                         </tfoot>
                     </table>
                 </div>
+                <p className="text-muted mx-4 fs-6">Factors set with higher importance contribute more to an option's total score.</p>
                 <div className="d-flex flex-row">
                     <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}>Reassess</button>
                     <span className="ps-2"></span>
