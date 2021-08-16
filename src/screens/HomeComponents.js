@@ -34,8 +34,6 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
     const onChoiceNew = (e) => { Pd(e, () => { setChoices([...choices, ""]) }) }
     const onChoiceChange = (e, index) => { setChoices(choices.map((v, i) => Tern(i === index, e.target.value, choices[i]))); }
 
-    const fieldSpacer = <i className="bi bi-x-lg btn o-0 disabled py-2" />;
-
     const nextStepClick = (e) => {
         const duplicatesExist = () => {
             const tester = {};
@@ -70,17 +68,20 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
                             {
                                 GenerateArray(
                                     choices.length,
-                                    (index) => <div key={index} className="d-flex flex-row py-1">
-                                        <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)}></input>
-                                        {
-                                            Tern(index > 1,
-                                                <button disabled={currentStep !== 1} className="rounded-circle btn" onClick={(e) => { onChoiceRemove(e, index); }} >
-                                                    <i className="bi bi-x-lg" />
-                                                </button>,
-                                                fieldSpacer,
-                                            )
-                                        }
-                                    </div>
+                                    (index) => {
+                                        const optional = index > 1;
+                                        return <div key={index} className="d-flex flex-row py-1 position-relative">
+                                            <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)}></input>
+                                            {
+                                                Tern(optional,
+                                                    <button disabled={currentStep !== 1} className="rounded-circle btn position-absolute py-auto" style={{ right: "0px" }} onClick={(e) => { onChoiceRemove(e, index); }} >
+                                                        <i className="bi bi-x-lg" />
+                                                    </button>,
+                                                    null,
+                                                )
+                                            }
+                                        </div>
+                                    }
                                 )
                             }
                         </div>
@@ -88,7 +89,7 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
                     <p className="text-center text-danger my-3">{errorMessage}</p>
                     <div className="row">
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} disabled={currentStep !== 1} onClick={onChoiceNew}><i className="bi bi-plus-lg me-2"></i> Add a New Choice</button>
+                            <button className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} disabled={currentStep !== 1} onClick={onChoiceNew}><i className="bi bi-plus-lg me-2"></i> Add Choice</button>
                         </div>
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
                             <button className={"w-100 btn rounded-1 btn-primary text-white"} disabled={currentStep !== 1} onClick={nextStepClick}><i className="bi bi-arrow-right me-2"></i>Next Step</button>
@@ -102,7 +103,6 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
 
 const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
     const { breakpointSelector } = useResize();
-    const fieldSpacer = <i className="bi bi-x-lg btn o-0 disabled py-2" />;
 
     const [factors, setFactors] = useState(["", ""])
     const [errorMessage, setErrorMessage] = useState("")
@@ -148,17 +148,20 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
                             {
                                 GenerateArray(
                                     factors.length,
-                                    (index) => <div key={index} className="d-flex flex-row py-1">
-                                        <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
-                                        {
-                                            Tern(index > 1,
-                                                <button disabled={currentStep !== 2} className="rounded-circle btn" onClick={(e) => { onFactorRemove(e, index); }} >
-                                                    <i className="bi bi-x-lg" />
-                                                </button>,
-                                                fieldSpacer,
-                                            )
-                                        }
-                                    </div>
+                                    (index) => {
+                                        const optional = index > 1;
+                                        return <div key={index} className="d-flex flex-row py-1 position-relative">
+                                            <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
+                                            {
+                                                Tern(index > 1,
+                                                    <button disabled={currentStep !== 2} className="rounded-circle btn position-absolute py-auto" style={{ right: "0px" }} onClick={(e) => { onFactorRemove(e, index); }} >
+                                                        <i className="bi bi-x-lg" />
+                                                    </button>,
+                                                    null,
+                                                )
+                                            }
+                                        </div>
+                                    }
                                 )
                             }
                         </div>
@@ -169,7 +172,7 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
                             <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}><i className="bi bi-arrow-left me-2"></i>Previous Step</button>
                         </div>
                         <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 2} className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}><i className="bi bi-plus-lg me-2"></i>Add a New Factor</button>
+                            <button disabled={currentStep !== 2} className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}><i className="bi bi-plus-lg me-2"></i>Add Factor</button>
                         </div>
                         <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
                             <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2"></i>Next Step</button>
