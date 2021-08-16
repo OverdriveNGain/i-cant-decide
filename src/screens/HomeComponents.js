@@ -260,17 +260,6 @@ const getRatingMatrix = (choices, factors) => {
 const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRatingMatrix }) => {
     const [ratingMatrix, setRatingMatrix] = useState([])
 
-    useEffect(() => {
-        setRatingMatrix(getRatingMatrix(choices, factors))
-    }, [choices, factors])
-
-    if (Object.keys(ratingMatrix).length !== choices.length)
-        return <div></div>
-    for (let factor of factors) {
-        if (ratingMatrix[choices[0]] == null || ratingMatrix[choices[0]][factor.name] == null)
-            return <div></div>
-    }
-
     const modifyRatingMatrix = (choice, factorName, rating) => {
         let copiedRatingMatrix = {};
         for (let property in ratingMatrix) {
@@ -279,15 +268,36 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
         copiedRatingMatrix[choice][factorName] = parseInt(rating);
         setRatingMatrix(copiedRatingMatrix)
     }
-
-
     const nextStepClick = (e) => {
         e.preventDefault();
         upperSetRatingMatrix(ratingMatrix);
         onChangeForm(e, 5);
     }
+    const ratingMatrixIsUpdated = () => {
+        const ratingMatrixKeys = Object.keys(ratingMatrix);
+        if (ratingMatrixKeys.length !== choices.length)
+            return false;
+        for (let i = 0; i < choices.length; i++) {
+            if (ratingMatrixKeys[i] !== choices[i])
+                return false;
+        }
+        if (ratingMatrixKeys.length === 0)
+            return false;
+        const ratingMatrixFactorKeys = Object.keys(ratingMatrix[ratingMatrixKeys[0]])
+        if (ratingMatrixFactorKeys.length !== factors.length)
+            return false;
+        for (let i = 0; i < factors.length; i++) {
+            if (ratingMatrixFactorKeys[i] !== factors[i].name)
+                return false;
+        }
+        return true;
+    }
 
-    if (factors.length === 0)
+    useEffect(() => {
+        setRatingMatrix(getRatingMatrix(choices, factors))
+    }, [choices, factors])
+
+    if (!ratingMatrixIsUpdated())
         return <div></div>
 
     return (
@@ -333,16 +343,28 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
 }
 
 const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
+    const previousRatingMatrix = useRef(null);
+    const previousFactors = useRef(null);
     const optionsArray = Object.keys(ratingMatrix);
 
-    if (optionsArray.length === 0)
-        return <div></div>
+    if (currentStep !== 5) {
+        if (previousFactors.current == null)
+            return <div></div>
+        ratingMatrix = previousRatingMatrix.current;
+        factors = previousFactors.current;
+    }
 
     const factorsArray = Object.keys(ratingMatrix[optionsArray[0]]);
     const values = GenerateArray(factorsArray.length, (factorI) =>
         GenerateArray(optionsArray.length, (optionI) =>
             ratingMatrix[optionsArray[optionI]][factorsArray[factorI]] * factors.find((v) => v.name === factorsArray[factorI]).rating)
     );
+    const onPreviousStep = (e) => {
+        previousRatingMatrix.current = ratingMatrix;
+        previousFactors.current = factors;
+        onChangeForm(e, 4);
+    }
+
     return (
         <form className="d-block card rounded-2 shadow border-0 mb-3 mx-4">
             <div className="p-3">
@@ -354,8 +376,6 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                             <tr>
                                 <th></th>
                                 {GenerateArray(optionsArray.length, (i => {
-                                    console.log(`Will return:`)
-                                    console.log(optionsArray[i])
                                     return <th key={i} className="text-center py-2">{optionsArray[i]}</th>
                                 }
                                 ))}
@@ -389,7 +409,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                     </table>
                 </div>
                 <div className="d-flex flex-row">
-                    <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 4)}>Reassess</button>
+                    <button disabled={currentStep !== 5} className="mt-4 w-50 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}>Reassess</button>
                     <span className="ps-2"></span>
                     <div />
                 </div>
