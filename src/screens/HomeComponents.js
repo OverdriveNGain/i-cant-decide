@@ -465,6 +465,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                     <span className="ps-2"></span>
                     <div />
                 </div>
+                <small className="text-center o-50 d-block mt-5">The creator of this tool is not liable for any losses of assets that are the result of following suggestions that come from this application. I Can't Decide is a tool for making complicated decisions, not a substitute for any omniscient being.</small>
             </div>
         </form >
     );
