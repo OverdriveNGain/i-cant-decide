@@ -23,7 +23,8 @@ const Home = () => {
     const onChangeForm = (e, nextStage) => { Pd(e, () => { setStepData([nextStage, Math.max(nextStage, stePdata[1])]) }) }
 
     useLayoutEffect(() => {
-        const options = { block: "center" };
+        // const options = { block: "center" };
+        const options = true;
         switch (stePdata[0]) {
             case 1:
                 form1.current.scrollIntoView(options);
