@@ -471,7 +471,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                 <tr>
                                     <th></th>
                                     {GenerateArray(optionsArray.length, (i => {
-                                        return <th key={i} className={`text-center py-2 ${Tern(i === maxI, "text-success", "")}`}> {optionsArray[i]}</th>
+                                        return <th key={i} className="text-center py-2"><span className={`${Tern(i === maxI, "text-success", "")}`}>{optionsArray[i]}</span></th>
                                     }
                                     ))}
                                 </tr>
