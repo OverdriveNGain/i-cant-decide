@@ -422,7 +422,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                 <h1 className="display-1 font-title text-primary text-center">{Object.keys(ratingMatrix)[maxI]}!</h1>
                 <hr />
                 <div className="mx-5">
-                    <table className="w-100 h4 table table-striped">
+                    <table className="w-100 h6 table table-striped">
                         <thead>
                             <tr>
                                 <th></th>
