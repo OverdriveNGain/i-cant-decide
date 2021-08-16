@@ -427,7 +427,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                             <tr>
                                 <th></th>
                                 {GenerateArray(optionsArray.length, (i => {
-                                    return <th key={i} className="text-center py-2">{optionsArray[i]}</th>
+                                    return <th key={i} className={`text-center py-2 ${Tern(i === maxI, "text-success", "")}`}> {optionsArray[i]}</th>
                                 }
                                 ))}
                             </tr>
@@ -450,7 +450,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                             <tr>
                                 <td></td>
                                 {GenerateArray(optionsArray.length, (optionI) => {
-                                    return (<td key={optionI} className="text-center py-2 fw-bold">
+                                    return (<td key={optionI} className={`text-center py-2 fw-bold ${Tern(optionI === maxI, "text-success", "")}`}>
                                         {sums[optionI]}
                                     </td>)
                                 })
@@ -466,7 +466,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                     <div />
                 </div>
             </div>
-        </form>
+        </form >
     );
 }
 
