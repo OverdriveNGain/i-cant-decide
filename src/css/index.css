@@ -32,3 +32,17 @@ code {
 .font-title{
   font-family: 'Amatic SC', cursive;
 }
+
+a {
+  text-decoration: none;
+  color: "auto";
+}
+
+div.App, #root, body, html {
+  min-height: 100vh;
+}
+
+html, body {height: 100%;}
+.App {display: flex; flex-direction: column;}
+.non-footer-content {flex: 1 0 auto;}
+footer {flex-shrink: 0; padding: 20px;}

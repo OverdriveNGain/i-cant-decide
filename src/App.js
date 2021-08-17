@@ -4,10 +4,16 @@ import { LandingBg } from './screens/HomeComponents';
 function App() {
   return (
     <div className="App">
-      <div style={{ position: "fixed", zIndex: "-10", overflow: "hidden", width: "100wh", height: "100vh" }}>
-        <LandingBg />
+      <div className="non-footer-content">
+        <div style={{ position: "fixed", zIndex: "-10", overflow: "hidden", width: "100wh", height: "100vh" }}>
+          <LandingBg />
+        </div>
+        <Home />
       </div>
-      <Home />
+      <footer>
+        <p className="text-center text-muted"><a href="www.jeremyamon.com">www.jeremyamon.com</a></p>
+      </footer>
+
     </div>
   );
 }
