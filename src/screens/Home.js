@@ -49,7 +49,8 @@ const Home = () => {
                 <div style={{ height: "10vh" }}></div>
                 <div className="display-1 h1 fw-bold text-center text-primary font-title m-0">I can't decide</div>
                 <p className="text-center text-muted o-50 mb-5">A Rational Helper for the Indecisive</p>
-                <p className="text-center">Let's say you have to pick between 3 laptops, and each laptop has different ratings in their CPU, batteries, RAM, etc. You thought that in general, these laptops are okay overall, but you want the best. Not only that, but you value RAM over battery quality, but not as much as CPU performance. </p>
+                <p className="text-center">Can't pick the right bag to buy? Don't know which laptop is worth buying the most? Don't know which college to go for? <strong>You've come to the right place.</strong></p>
+                <p className="text-center">For example; let's say you have to pick between 3 laptops, and each laptop has different ratings in their CPU, batteries, RAM, etc. You thought that in general, these laptops are okay overall, but you want the best. Not only that, but you value RAM over battery quality, but not as much as CPU performance. </p>
                 <p className="text-center fw-bold mb-5">So yeah, this tool aims to solve problems like that.</p>
                 <div style={{ width: `${breakpointSelector(100, 90, 80, 70, 60)}%`, margin: "auto" }}>
                     <div>

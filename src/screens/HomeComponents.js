@@ -472,28 +472,50 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
         values.reduce((a, b, factorI) => a + b[optionI], 0));
 
     let max = sums[0];
-    let maxI = 0;
+    let maxIndices = [0];
     for (let i = 1; i < sums.length; i++) {
         if (sums[i] > max) {
             max = sums[i];
-            maxI = i;
+            maxIndices = [i];
+        }
+        else if (sums[i] === max) {
+            maxIndices.push(i);
         }
     }
 
     return (
-        <form className="d-block bg-white shadow border-0 mb-3">
-            <div className="p-3 p-md-5">
-                <p className="fw-bold text-center m-0">Results say you should go for...</p>
-                <h1 className="display-1 font-title text-primary text-center">{Object.keys(ratingMatrix)[maxI]}!</h1>
-                <hr />
-                <div className="">{
+        <form className="d-block bg-white shadow border-0 mb-3 mt-5">
+            <div className="p-3 p-md-5 text-center">
+                {(() => {
+                    if (maxIndices.length === 1)
+                        return <div>
+                            <p className="mt-2">Results say you should go for...</p>
+                            <h1 className="display-1 font-title text-primary">{Object.keys(ratingMatrix)[maxIndices[0]]}!</h1>
+                        </div>
+
+                    const allMax = maxIndices.length === optionsArray.length
+                    return <div>
+                        <p className="mt-2">Results say you should go for {Tern(allMax, "all", maxIndices.length)} of your options.</p>
+                        <p className="mt-2 fw-bold">{Tern(allMax, "All", "Some")} of your options got the same score. Trying reassessing some of your factors?</p>
+                    </div>
+                })()}
+                <div className="container"><hr />{
                     (breakpointSelector(
                         () => <div>
+                            <div className="text-muted mb-3">
+                                <span className="fw-bold">Legend: </span>
+                                <span>{GenerateArray(factors.length, (factorsI) => factorsArray[factorsI]).join("×")}</span>
+                                <span> = Score</span>
+                            </div>
                             {
-                                GenerateArray(optionsArray.length, (i) => {
-                                    return <div key={i} className={`text-center ${Tern(i === maxI, "text-success", "")}`}>
-                                        {`${optionsArray[i]}: ${sums[i]}`}
-                                    </div>
+                                GenerateArray(optionsArray.length, (optionsI) => {
+                                    return (
+                                        <div key={optionsI} className={`text-center ${Tern(sums[optionsI] === max && maxIndices.length === 1, "text-success", "")}`}>
+                                            <span className="fw-bold">{`${optionsArray[optionsI]}: `}</span>
+                                            <span>{GenerateArray(factors.length, (factorsI) => values[factorsI][optionsI]).join("×")}</span>
+                                            <span>{` = ${sums[optionsI]}`}</span>
+                                        </div>
+                                    )
                                 })
                             }
                             <hr />
@@ -504,7 +526,11 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                 <tr>
                                     <th></th>
                                     {GenerateArray(optionsArray.length, (i => {
-                                        return <th key={i} className="text-center py-2"><span className={`${Tern(i === maxI, "text-success", "")}`}>{optionsArray[i]}</span></th>
+                                        return <th key={i} className="text-center py-2">
+                                            <span className={`${Tern(maxIndices.some((v) => i === v && maxIndices.length === 1), "text-success", "")}`}>
+                                                {optionsArray[i]}
+                                            </span>
+                                        </th>
                                     }
                                     ))}
                                 </tr>
@@ -527,7 +553,8 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                 <tr>
                                     <td></td>
                                     {GenerateArray(optionsArray.length, (optionI) => {
-                                        return (<td key={optionI} className={`text-center py-2 fw-bold ${Tern(optionI === maxI, "text-success", "")}`}>
+                                        ;
+                                        return (<td key={optionI} className={`text-center py-2 fw-bold ${Tern(maxIndices.some((v) => optionI === v && maxIndices.length === 1), "text-success", "")}`}>
                                             {sums[optionI]}
                                         </td>)
                                     })
@@ -539,7 +566,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                     ))()
                 }
                 </div>
-                <p className={`text-muted fs-6 ${breakpointSelector("text-center", null, "")}`}>Factors set with higher importance contribute more to an option's total score.</p>
+                <p className="text-muted fs-6 text-center">Factors set with higher importance contribute more to an option's total score.</p>
                 <div className="d-flex flex-row justify-content-center">
                     <button disabled={currentStep !== 5} className="mt-4 w-75 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}><i className="bi bi-skip-backward-fill me-2"></i>Reassess</button>
                     <span className="ps-2"></span>
