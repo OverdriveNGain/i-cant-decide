@@ -84,6 +84,7 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
             </div>
             <div className="p-3">
                 <div className="container">
+                    <p className="text-muted text-center o-50">e.g. HP Spectre x360, Apple MacBook Air, etc.</p>
                     <div className="row justify-content-center">
                         <div className={`p-0 ${breakpointSelector("col", null, "col-6")}`}>
                             {
@@ -163,7 +164,7 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
             </div>
             <div className="p-3">
                 <div className="container">
-                    <p className="text-muted text-center o-50">e.g. Price, Color, Long-Term, etc.</p>
+                    <p className="text-muted text-center o-50">e.g. Battery, RAM, CPU, etc.</p>
                     <div className="row justify-content-center mt-3">
                         <div className={`p-0 ${breakpointSelector("col", null, "col-6")}`}>
                             {
@@ -264,6 +265,7 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
             </div>
             <div className="p-3">
                 <div className="container">
+                    <p className="text-muted text-center o-50">You might value CPU quality over battery life, for example.</p>
                     <div>
                         {
                             GenerateArray(
