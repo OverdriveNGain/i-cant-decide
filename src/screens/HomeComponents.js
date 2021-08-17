@@ -227,13 +227,13 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
 
     const ratingToWords = (factor, rating) => {
         const ratings = [
-            " is not that important ",
-            " is a little important",
-            " is somewhat important",
-            " is important",
-            " is very important"];
+            "...is not that important ",
+            "... is a little important",
+            "...is somewhat important",
+            "...is important",
+            "...is very important"];
         return (
-            <span className="text-muted">{ratings[parseInt(rating) - 1]}</span>
+            <span>{ratings[parseInt(rating) - 1]}</span>
         )
     }
 
@@ -270,11 +270,14 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                         {
                             GenerateArray(
                                 factors.length,
-                                (index) => <div key={index} className="row align-items-center">
-                                    <span className="p-0 col-6 col-md-3 fw-bold text-end text-center">{factors[index].name}</span>
-                                    <input className="p-0 col-6 col-md-3" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
-                                    <span className="p-0 col-12 col-md-6 text-center">{ratingToWords(factors[index].name, factors[index].rating)}</span>
-                                    <hr className="my-2" />
+                                (index) => <div key={index} className="row align-items-center text-muted mb-2">
+                                    <span className="col-6 col-md-3 px-2">
+                                        <div className="p-0 w-100 text-end text-center rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}> <span className="fw-bold">{factors[index].name}</span>...</div>
+                                    </span>
+                                    <input className="px-2-0 col-6 col-md-3" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
+                                    <span className="col-12 col-md-6 px-2 pt-2 pb-3 py-md-0">
+                                        <div className="p-0 text-center w-100 rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}>{ratingToWords(factors[index].name, factors[index].rating)}</div>
+                                    </span>
                                 </div>
                             )
                         }
@@ -369,7 +372,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
         if (breakpointSelector(true, null, false))
             return (<span className="text-muted">{`${emojis[parseInt(rating) - 1]}`}</span>)
         return (
-            <span className="text-muted">{`${emojis[parseInt(rating) - 1]} ${ratings[parseInt(rating) - 1]}`}</span>
+            <span>{`${emojis[parseInt(rating) - 1]} ${ratings[parseInt(rating) - 1]}`}</span>
         )
     }
 
@@ -399,14 +402,21 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                                 const sliderVal = ratingMatrix[choices[choiceI]][factors[factorI].name];
                                                 const onChangeVal = (e) => modifyRatingMatrix(choices[choiceI], factors[factorI].name, e.target.value);
                                                 return (
-                                                    <div key={choiceI} className="d-flex flex-row align-items-center mb-2">
+                                                    <div key={choiceI} className="d-flex flex-row align-items-center mb-2 text-muted">
                                                         <div className="container p-0 ">
                                                             <div className="row m-0 align-items-center">
-                                                                <span className="col-6 p-0 fw-bold text-center" >{choices[choiceI]}</span>
-                                                                <input type="range" className="col-6" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
+                                                                <span className="col-6 px-2">
+                                                                    <div className="fw-bold text-center rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}>{choices[choiceI]}</div>
+                                                                </span>
+                                                                <input type="range" className="col-6 px-2" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
                                                             </div>
                                                         </div>
-                                                        <span className={breakpointSelector("", null, "w-50 text-center")}>{ratingToWords(sliderVal)}</span>
+                                                        <span className={breakpointSelector("px-2", null, "w-50 text-center px-2")} >
+                                                            {breakpointSelector(
+                                                                <div>{ratingToWords(sliderVal)}</div>, null,
+                                                                <div className="text-center rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}>{ratingToWords(sliderVal)}</div>
+                                                            )}
+                                                        </span>
                                                     </div>);
                                             }
                                         )
