@@ -21,10 +21,6 @@ code {
     monospace;
 }
 
-body {
-  background-color: rgb(197, 234, 255);
-}
-
 .animated-all{
   -webkit-transition: all 0.4s ease-in-out;
   -moz-transition: all 0.4s ease-in-out;

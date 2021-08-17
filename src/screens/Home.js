@@ -2,7 +2,7 @@ import { useState, useRef, useLayoutEffect } from "react";
 import { Pd, Tern } from "../helpers/func";
 import useResize from "../hooks/useResize";
 // import Math from 'math';
-import { LandingForm1, LandingForm2, LandingForm3, LandingForm4, LandingBg, Results } from "./HomeComponents";
+import { LandingForm1, LandingForm2, LandingForm3, LandingForm4, Results } from "./HomeComponents";
 
 const Home = () => {
     const form1 = useRef(null)
@@ -45,9 +45,6 @@ const Home = () => {
 
     return (
         <div>
-            <div style={{ position: "absolute", zIndex: "-10", overflow: "hidden", width: "100wh", height: "100vh" }}>
-                <LandingBg />
-            </div>
             <div className="container">
                 <div style={{ height: "10vh" }}></div>
                 <div className="display-1 h1 fw-bold text-center text-primary font-title m-0">I can't decide</div>
