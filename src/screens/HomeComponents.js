@@ -84,7 +84,7 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
             </div>
             <div className="p-3">
                 <div className="container">
-                    <p className="text-muted text-center o-50">e.g. HP Spectre x360, Apple MacBook Air, etc.</p>
+                    <p className="text-muted text-center o-50">These can be different brands that you're planning to buy, or different colleges that you're planning to get into.</p>
                     <div className="row justify-content-center">
                         <div className={`p-0 ${breakpointSelector("col", null, "col-6")}`}>
                             {
@@ -164,7 +164,7 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
             </div>
             <div className="p-3">
                 <div className="container">
-                    <p className="text-muted text-center o-50">e.g. Battery, RAM, CPU, etc.</p>
+                    <p className="text-muted text-center o-50">These can be things that vary among your choices. e.g. Price, Location, Battery-life, etc.</p>
                     <div className="row justify-content-center mt-3">
                         <div className={`p-0 ${breakpointSelector("col", null, "col-6")}`}>
                             {

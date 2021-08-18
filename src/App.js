@@ -11,7 +11,7 @@ function App() {
         <Home />
       </div>
       <footer>
-        <p className="text-center text-muted"><a href="www.jeremyamon.com">www.jeremyamon.com</a></p>
+        <p className="text-center text-muted"><a href="https://www.jeremyamon.com">www.jeremyamon.com</a></p>
       </footer>
 
     </div>
