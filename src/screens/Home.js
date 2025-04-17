@@ -63,7 +63,7 @@ const Home = () => {
                             opacity: Tern(stePdata[0] === 2, 1.0, 0.4),
                             display: Tern(stePdata[1] >= 2, "block", "none")
                         }}>
-                            <LandingForm2 upperSetFactors={setFactors} factors={factors} onChangeForm={onChangeForm} currentStep={stePdata[0]} />
+                            <LandingForm2 upperSetFactors={setFactors} existingFactors={factors} onChangeForm={onChangeForm} currentStep={stePdata[0]} />
                         </div>
                         <div ref={form3} style={{
                             opacity: Tern(stePdata[0] === 3, 1.0, 0.4),

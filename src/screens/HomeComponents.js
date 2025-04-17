@@ -93,7 +93,7 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
                                     (index) => {
                                         const optional = index > 1;
                                         return <div key={index} className="d-flex flex-row py-1 position-relative">
-                                            <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)}></input>
+                                            <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)} />
                                             {
                                                 Tern(optional,
                                                     <button disabled={currentStep !== 1} className="rounded-circle btn position-absolute py-auto" style={{ right: "0px" }} onClick={(e) => { onChoiceRemove(e, index); }} >
@@ -123,7 +123,7 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
     );
 }
 
-const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
+const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep, existingFactors }) => {
     const { breakpointSelector } = useResize();
 
     const [factors, setFactors] = useState(["", ""])
@@ -152,13 +152,20 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
             setErrorMessage("Remove any duplicate factors")
         else {
             setErrorMessage("")
-            upperSetFactors(factors.map((v, i) => { return { name: v, rating: 3 } }));
+            const updatedFactors = factors.map((factorName) => {
+                const existingFactor = existingFactors?.find(f => f.name === factorName);
+                return { 
+                    name: factorName, 
+                    rating: existingFactor ? existingFactor.rating : 3 
+                };
+            });
+            upperSetFactors(updatedFactors);
             onChangeForm(e, 3);
         }
     }
 
     return (
-        <form disabled={currentStep === 2} className="d-block card rounded-2 shadow border-0 mb-3">
+        <form disabled={currentStep !== 2} className="d-block card rounded-2 shadow border-0 mb-3">
             <div className="bg-secondary rounded-top rounded-sm py-2 px-3 text-center">
                 <span className="text-white">Step 2: Enter your factors</span>
             </div>
@@ -191,13 +198,13 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep }) => {
                     <p className="text-center text-danger my-3">{errorMessage}</p>
                     <div className="row">
                         <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}><i className="bi bi-arrow-left me-2"></i>Previous Step</button>
+                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-outline-secondary" onClick={(e) => onChangeForm(e, 1)}><i className="bi bi-arrow-left me-2" />Previous Step</button>
                         </div>
                         <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 2} className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(factors.length < maxFactors, "", " disabled")} onClick={onFactorNew}><i className="bi bi-plus-lg me-2"></i>Add Factor</button>
+                            <button disabled={currentStep !== 2} className={`w-100 btn rounded-1 btn-outline-secondary${Tern(factors.length < maxFactors, "", " disabled")}`} onClick={onFactorNew}><i className="bi bi-plus-lg me-2" />Add Factor</button>
                         </div>
                         <div className="mt-2 col-12 col-md-4 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2"></i>Next Step</button>
+                            <button disabled={currentStep !== 2} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2" />Next Step</button>
                         </div>
                     </div>
                 </div>
@@ -211,7 +218,12 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
     const lastFactors = useRef(null);
     const [factors, setFactors] = useState([])
 
-    const onFactorRatingChange = (e, factor) => setFactors(factors.map((v, i) => Tern(v.name === factor, { name: factor, rating: parseInt(e.target.value) }, factors[i])));
+    const onFactorRatingChange = (e, factor) => {
+        const newFactors = factors.map((v) => {
+            return v.name === factor ? { ...v, rating: parseInt(e.target.value, 10) } : v;
+        });
+        setFactors(newFactors);
+    }
 
     const nextStepClick = (e) => {
         e.preventDefault();
@@ -225,10 +237,10 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
         onChangeForm(e, 2);
     }
 
-    const ratingToWords = (factor, rating) => {
+    const ratingToWords = (rating) => {
         const ratings = [
-            "...is not that important ",
-            "... is a little important",
+            "...is not that important",
+            "...is a little important",
             "...is somewhat important",
             "...is important",
             "...is very important"];
@@ -240,26 +252,26 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
     useEffect(() => {
         if (lastFactors.current === null) {
             setFactors(initialFactors);
+            return;
         }
-        else {
-            const temp = [];
-            for (let newFactorI = 0; newFactorI < initialFactors.length; newFactorI++) {
-                let factorName = initialFactors[newFactorI].name;
-                let oldIndex = lastFactors.current.findIndex((v, i) => v.name === factorName);
-                if (oldIndex !== -1)
-                    temp.push(lastFactors.current[oldIndex])
-                else
-                    temp.push(initialFactors[newFactorI])
-            }
-            setFactors(temp);
+        
+        const temp = [];
+        for (const initialFactor of initialFactors) {
+            const factorName = initialFactor.name;
+            const oldIndex = lastFactors.current.findIndex((v) => v.name === factorName);
+            if (oldIndex !== -1)
+                temp.push({...lastFactors.current[oldIndex]});
+            else
+                temp.push({...initialFactor});
         }
+        setFactors(temp);
     }, [initialFactors])
 
     if (initialFactors.length === 0)
         return null
 
     return (
-        <form disabled={currentStep === 2} className="d-block card rounded-2 shadow border-0 mb-3">
+        <form disabled={currentStep !== 3} className="d-block card rounded-2 shadow border-0 mb-3">
             <div className="bg-secondary rounded-top rounded-sm py-2 px-3 text-center">
                 <span className="text-white">Step 3: Rate your factors' importance</span>
             </div>
@@ -274,9 +286,9 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                                     <span className="col-6 col-md-3 px-2">
                                         <div className="p-0 w-100 text-end text-center rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}> <span className="fw-bold">{factors[index].name}</span>...</div>
                                     </span>
-                                    <input className="px-2-0 col-6 col-md-3" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)}></input>
+                                    <input className="px-2-0 col-6 col-md-3" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)} />
                                     <span className="col-12 col-md-6 px-2 pt-2 pb-3 py-md-0">
-                                        <div className="p-0 text-center w-100 rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}>{ratingToWords(factors[index].name, factors[index].rating)}</div>
+                                        <div className="p-0 text-center w-100 rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}>{ratingToWords(factors[index].rating)}</div>
                                     </span>
                                 </div>
                             )
@@ -284,10 +296,10 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                     </div>
                     <div className="row">
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}><i className="bi bi-arrow-left me-2"></i>Previous Step</button>
+                            <button className="w-100 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}><i className="bi bi-arrow-left me-2" />Previous Step</button>
                         </div>
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2"></i>Next Step</button>
+                            <button className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2" />Next Step</button>
                         </div>
                     </div>
                 </div>
@@ -298,20 +310,14 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
 }
 
 const getRatingMatrix = (choices, factors, oldRatingMatrix) => {
-    let newRatingMatrix = {}
-    for (let i = 0; i < choices.length; i++) {
-        let map = {};
-        let choice = choices[i]
-        for (let j = 0; j < factors.length; j++) {
-            let factorName = factors[j].name;
-            let b1 = oldRatingMatrix[choice] != null
-            let b2 = false;
-            if (b1)
-                b2 = oldRatingMatrix[choice][factorName] != null;
-            if (b1 && b2)
-                map[factorName] = oldRatingMatrix[choice][factorName]
-            else
-                map[factorName] = 3;
+    const newRatingMatrix = {}
+    for (const choice of choices) {
+        const map = {};
+        for (const factor of factors) {
+            const factorName = factor.name;
+            const b1 = oldRatingMatrix[choice] != null
+            const b2 = b1 ? oldRatingMatrix[choice][factorName] != null : false;
+            map[factorName] = b1 && b2 ? oldRatingMatrix[choice][factorName] : 3;
         }
 
         newRatingMatrix[choice] = map
@@ -324,8 +330,8 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
     const { breakpointSelector } = useResize();
 
     const modifyRatingMatrix = (choice, factorName, rating) => {
-        let copiedRatingMatrix = {};
-        for (let property in ratingMatrix) {
+        const copiedRatingMatrix = {};
+        for (const property in ratingMatrix) {
             copiedRatingMatrix[property] = ({ ...ratingMatrix[property] });
         }
         copiedRatingMatrix[choice][factorName] = parseInt(rating);
@@ -370,7 +376,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
             "Good",
             "Excellent"];
         if (breakpointSelector(true, null, false))
-            return (<span className="text-muted">{`${emojis[parseInt(rating) - 1]}`}</span>)
+            return (<span className="text-muted">{emojis[parseInt(rating) - 1]}</span>)
         return (
             <span>{`${emojis[parseInt(rating) - 1]} ${ratings[parseInt(rating) - 1]}`}</span>
         )
@@ -384,7 +390,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
         return null
 
     return (
-        <form disabled={currentStep === 4} className="d-block card rounded-2 shadow border-0 mb-3">
+        <form disabled={currentStep !== 4} className="d-block card rounded-2 shadow border-0 mb-3">
             <div className="bg-secondary rounded-top rounded-sm py-2 px-3 text-center">
                 <span className="text-white">Step 4: Rate your choices</span>
             </div>
@@ -408,7 +414,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                                                 <span className="col-6 px-2">
                                                                     <div className="fw-bold text-center rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}>{choices[choiceI]}</div>
                                                                 </span>
-                                                                <input type="range" className="col-6 px-2" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal}></input>
+                                                                <input type="range" className="col-6 px-2" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal} />
                                                             </div>
                                                         </div>
                                                         <span className={breakpointSelector("px-2", null, "w-50 text-center px-2")} >
