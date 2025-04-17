@@ -107,20 +107,37 @@ const Home = () => {
     return (
         <div>
             <div className="container">
-                <div style={{ height: "10vh" }}></div>
+                {/* Responsive top spacing - larger on desktop, smaller on mobile */}
+                <div className="d-none d-md-block" style={{ height: "10vh" }}></div>
+                <div className="d-block d-md-none" style={{ height: "5vh" }}></div>
                 <div className="position-relative mb-2">
-                    {/* Centered title */}
-                    <div className="display-1 h1 fw-bold text-center text-primary font-title m-0">I can't decide</div>
+                    {/* Responsive title and button layout */}
+                    <div className="d-none d-md-block"> {/* Desktop layout (centered title) */}
+                        <div className="position-relative">
+                            <div className="display-1 h1 fw-bold text-center text-primary font-title m-0">I can't decide</div>
+                            
+                            <button 
+                                className="btn btn-sm btn-outline-danger position-absolute" 
+                                style={{ top: '50%', right: 0, transform: 'translateY(-50%)' }}
+                                onClick={(e) => openConfirmModal(e)}
+                                title="Clear all data and start over"
+                            >
+                                Clear Data
+                            </button>
+                        </div>
+                    </div>
                     
-                    {/* Positioned button */}
-                    <button 
-                        className="btn btn-sm btn-outline-danger position-absolute" 
-                        style={{ top: '50%', right: 0, transform: 'translateY(-50%)' }}
-                        onClick={(e) => openConfirmModal(e)}
-                        title="Clear all data and start over"
-                    >
-                        Clear Data
-                    </button>
+                    <div className="d-flex d-md-none justify-content-between align-items-center"> {/* Mobile layout (corners) */}
+                        <div className="h2 fw-bold text-primary font-title m-0">I can't decide</div>
+                        
+                        <button 
+                            className="btn btn-sm btn-outline-danger" 
+                            onClick={(e) => openConfirmModal(e)}
+                            title="Clear all data and start over"
+                        >
+                            Clear Data
+                        </button>
+                    </div>
                 </div>
                 
                 {/* Confirmation Modal Component */}
@@ -129,7 +146,12 @@ const Home = () => {
                     onClose={closeConfirmModal}
                     onConfirm={resetApp}
                 />
-                <p className="text-center text-muted o-50 mb-5">A Rational Helper for the Indecisive</p>
+                {/* Desktop tagline spacing */}
+                <p className="d-none d-md-block text-center text-muted o-50 mb-5">A Rational Helper for the Indecisive</p>
+                
+                {/* Mobile tagline spacing - equal margins above and below */}
+                <p className="d-block d-md-none text-center text-muted o-50 mt-4 mb-4">A Rational Helper for the Indecisive</p>
+                
                 <p className="text-center">Can't pick the right bag to buy? Don't know which laptop is worth buying the most? Don't know which college to go for? <strong>You've come to the right place.</strong></p>
                 <p className="text-center">For example; let's say you have to pick between 3 laptops, and each laptop has different ratings in their CPU, batteries, RAM, etc. You thought that in general, these laptops are okay overall, but you want the best. Not only that, but you value RAM over battery quality, but not as much as CPU performance. </p>
                 <p className="text-center fw-bold mb-5">So yeah, this tool aims to solve problems like that.</p>
