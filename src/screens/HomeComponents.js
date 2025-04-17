@@ -4,6 +4,13 @@ import Sketch from "react-p5";
 import { GenerateArray, Pd, Tern } from "../helpers/func";
 import { useEffect, useRef, useState } from "react";
 
+// Helper function to prevent form submission when Enter key is pressed
+const preventEnterKeySubmission = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+  }
+};
+
 const LandingBg = (props) => {
     const setup = (p5) => {
         p5.createCanvas(window.innerWidth, window.innerHeight).parent("LandingBgParent");
@@ -93,7 +100,7 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
                                     (index) => {
                                         const optional = index > 1;
                                         return <div key={index} className="d-flex flex-row py-1 position-relative">
-                                            <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)} />
+                                            <input disabled={currentStep !== 1} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={choices[index]} placeholder={`Enter choice ${index + 1}`} onChange={(e) => onChoiceChange(e, index)} onKeyDown={preventEnterKeySubmission} />
                                             {
                                                 Tern(optional,
                                                     <button disabled={currentStep !== 1} className="rounded-circle btn position-absolute py-auto" style={{ right: "0px" }} onClick={(e) => { onChoiceRemove(e, index); }} >
@@ -111,7 +118,7 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
                     <p className="text-center text-danger my-3">{errorMessage}</p>
                     <div className="row">
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button className={"w-100 btn rounded-1 btn-outline-secondary" + Tern(choices.length < maxChoices, "", " disabled")} disabled={currentStep !== 1} onClick={onChoiceNew}><i className="bi bi-plus-lg me-2"></i> Add Choice</button>
+                            <button className={`w-100 btn rounded-1 btn-outline-secondary${Tern(choices.length < maxChoices, "", " disabled")}`} disabled={currentStep !== 1} onClick={onChoiceNew}><i className="bi bi-plus-lg me-2"></i> Add Choice</button>
                         </div>
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
                             <button className={"w-100 btn rounded-1 btn-primary text-white"} disabled={currentStep !== 1} onClick={nextStepClick}><i className="bi bi-arrow-right me-2"></i>Next Step</button>
@@ -180,7 +187,7 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep, existingFact
                                     (index) => {
                                         const optional = index > 1;
                                         return <div key={index} className="d-flex flex-row py-1 position-relative">
-                                            <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)}></input>
+                                            <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)} onKeyDown={preventEnterKeySubmission} />
                                             {
                                                 Tern(index > 1,
                                                     <button disabled={currentStep !== 2} className="rounded-circle btn position-absolute py-auto" style={{ right: "0px" }} onClick={(e) => { onFactorRemove(e, index); }} >
@@ -286,7 +293,7 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
                                     <span className="col-6 col-md-3 px-2">
                                         <div className="p-0 w-100 text-end text-center rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}> <span className="fw-bold">{factors[index].name}</span>...</div>
                                     </span>
-                                    <input className="px-2-0 col-6 col-md-3" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)} />
+                                    <input className="px-2-0 col-6 col-md-3" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)} onKeyDown={preventEnterKeySubmission} />
                                     <span className="col-12 col-md-6 px-2 pt-2 pb-3 py-md-0">
                                         <div className="p-0 text-center w-100 rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}>{ratingToWords(factors[index].rating)}</div>
                                     </span>
@@ -414,7 +421,7 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                                                                 <span className="col-6 px-2">
                                                                     <div className="fw-bold text-center rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)" }}>{choices[choiceI]}</div>
                                                                 </span>
-                                                                <input type="range" className="col-6 px-2" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal} />
+                                                                <input type="range" className="col-6 px-2" min="1" max="5" disabled={currentStep !== 4} value={sliderVal} placeholder={`Enter factor ${choiceI + 1}`} onChange={onChangeVal} onKeyDown={preventEnterKeySubmission} />
                                                             </div>
                                                         </div>
                                                         <span className={breakpointSelector("px-2", null, "w-50 text-center px-2")} >
