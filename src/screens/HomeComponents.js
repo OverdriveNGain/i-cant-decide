@@ -656,6 +656,17 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
         }
         return Math.round(sum * 10) / 10; // Round to 1 decimal place
     });
+    
+    // Calculate scores on a scale where highest is 100
+    const rawMax = Math.max(...sums);
+    
+    // Scale scores proportionally so highest is 100
+    let normalizedSums = sums.map(score => {
+        // If all scores are the same or max is 0, return 100 for all
+        if (rawMax === 0 || sums.every(s => s === sums[0])) return 100;
+        // Otherwise scale proportionally where highest is 100
+        return Math.round((score / rawMax) * 100);
+    });
 
     let max = sums[0];
     let maxIndices = [0];
@@ -725,12 +736,23 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                             </tbody>
                             <tfoot className="border-top border-dark">
                                 <tr>
+                                    <td className="text-start text-muted">Raw Score</td>
+                                    <td className="text-center">-</td>
+                                    {GenerateArray(optionsArray.length, (optionI) => {
+                                        return (
+                                            <td key={optionI} className="text-center text-muted">
+                                                {sums[optionI]}
+                                            </td>
+                                        )
+                                    })}
+                                </tr>
+                                <tr>
                                     <td className="text-start fw-bold">Final Score</td>
                                     <td className="text-center">-</td>
                                     {GenerateArray(optionsArray.length, (optionI) => {
                                         return (
                                             <td key={optionI} className={`text-center fw-bold ${Tern(maxIndices.some((v) => optionI === v && maxIndices.length === 1), "text-success", "")}`}>
-                                                {sums[optionI]}
+                                                {normalizedSums[optionI]}
                                             </td>
                                         )
                                     })}
