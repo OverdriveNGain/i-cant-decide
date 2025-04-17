@@ -539,6 +539,10 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
                 <span className="text-white">Step 4: Rate your choices</span>
             </div>
             <div className="p-3">
+                <div className="alert alert-info mb-3">
+                    <p className="mb-1"><strong>How your ratings will be calculated:</strong></p>
+                    <p className="mb-0 small">For each factor, your ratings will be normalized to range from 0.0 to 1.0, where 1.0 is assigned to the highest-rated choice for that factor. This ensures that factors with naturally higher scores don't dominate the results.</p>
+                </div>
                 <div>
                     {
                         GenerateArray(factors.length, (factorI) => {
@@ -768,7 +772,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                     <span className="ps-2"></span>
                     <div />
                 </div>
-                <small className="text-center o-50 d-block mt-5">The creator of this tool is not liable for any losses of assets that are the result of following suggestions that come from this application. I Can't Decide is a tool for making complicated decisions, not a substitute for any omniscient being.</small>
+                <small className="text-center o-50 d-block mt-5">In This application is provided for informational purposes only. The decisions you make based on the results are your sole responsibility. The creators and maintainers of this tool make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, or suitability of the information provided. Any reliance you place on such information is strictly at your own risk.</small>
             </div>
         </form >
     );

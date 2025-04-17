@@ -189,7 +189,6 @@ const Home = () => {
             }}>
                 <Results ratingMatrix={ratingMatrix} factors={factors} onChangeForm={onChangeForm} currentStep={stePdata[0]} />
             </div>
-            <div style={{ height: "10vh" }}></div>
         </div>
     );
 }
