@@ -20,11 +20,11 @@ const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, 
             <div className="card-body p-2">
                 <div className="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom">
                     <span className="fw-bold">Final Score:</span>
-                    <span className={`fs-5 ${isWinner ? 'text-success fw-bold' : ''}`}>{normalizedScore}</span>
+                    <span className={`fs-5 ${isWinner ? 'text-success fw-bold' : ''}`}>{normalizedScore.toFixed(2)}</span>
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom text-muted small">
                     <span>Raw Score:</span>
-                    <span>{rawScore}</span>
+                    <span>{rawScore.toFixed(2)}</span>
                 </div>
                 <div className="mt-3">
                     <p className="mb-2 small fw-bold">Factor Scores:</p>
@@ -52,7 +52,7 @@ const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, 
                                         const weighted = values[factorI][optionIndex];
                                         const normalized = importance === 0 ? 0 : weighted / importance;
                                         return importance > 0
-                                            ? `${importance} × ${normalized.toFixed(2)} =`
+                                            ? `${normalized.toFixed(2)} × ${importance} =`
                                             : `0`;
                                     })()}
                                 </div>
@@ -75,7 +75,7 @@ const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, 
                                     }
                                     
                                     return (
-                                        <span className={textColorClass}>{score.toFixed(1)}</span>
+                                        <span className={textColorClass}>{score.toFixed(2)}</span>
                                     );
                                 })()}
                             </div>

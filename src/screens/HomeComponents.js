@@ -657,7 +657,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
             // Simply add up the values (which are already normalized * importance)
             sum += values[factorI][optionI];
         }
-        return Math.round(sum * 10) / 10; // Round to 1 decimal place
+        return Math.round(sum * 100) / 100; // Round to 2 decimal places
     });
     
     // Calculate scores on a scale where highest is 100
@@ -668,7 +668,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
         // If all scores are the same or max is 0, return 100 for all
         if (rawMax === 0 || sums.every(s => s === sums[0])) return 100;
         // Otherwise scale proportionally where highest is 100
-        return Math.round((score / rawMax) * 100);
+        return Math.round((score / rawMax) * 10000) / 100; // Round to 2 decimal places
     });
 
     let max = sums[0];
@@ -747,9 +747,9 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                                             
                                                             return (
                                                                 <>
-                                                                    <div className={`mb-0 ${textColorClass}`}>{score.toFixed(1)}</div>
+                                                                    <div className={`mb-0 ${textColorClass}`}>{score.toFixed(2)}</div>
                                                                     <div className="text-muted" style={{ fontSize: '0.7rem', lineHeight: '1', marginTop: '-2px' }}>
-                                                                        {normalizedValues[factorI][optionI].toFixed(1)} × {factors[factorI].rating}
+                                                                        {normalizedValues[factorI][optionI].toFixed(2)} × {factors[factorI].rating}
                                                                     </div>
                                                                 </>
                                                             );
@@ -768,7 +768,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                     {GenerateArray(optionsArray.length, (optionI) => {
                                         return (
                                             <td key={optionI} className="text-center text-muted">
-                                                {sums[optionI]}
+                                                {sums[optionI].toFixed(2)}
                                             </td>
                                         )
                                     })}
@@ -779,7 +779,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                     {GenerateArray(optionsArray.length, (optionI) => {
                                         return (
                                             <td key={optionI} className={`text-center fw-bold ${Tern(maxIndices.some((v) => optionI === v && maxIndices.length === 1), "text-success", "")}`}>
-                                                {normalizedSums[optionI]}
+                                                {normalizedSums[optionI].toFixed(2)}
                                             </td>
                                         )
                                     })}
