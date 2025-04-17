@@ -671,6 +671,11 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
         return Math.round((score / rawMax) * 10000) / 100; // Round to 2 decimal places
     });
 
+    // Create a sorted index array based on normalizedSums (lowest to highest)
+    const sortedIndices = Array.from({ length: normalizedSums.length }, (_, i) => i)
+        .sort((a, b) => normalizedSums[a] - normalizedSums[b]);
+    
+    // Find the max score indices
     let max = sums[0];
     let maxIndices = [0];
     for (let i = 1; i < sums.length; i++) {
@@ -707,13 +712,13 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                 <tr>
                                     <th className="text-start">Factors</th>
                                     <th className="text-center">Importance</th>
-                                    {GenerateArray(optionsArray.length, (i => {
+                                    {sortedIndices.map(i => {
                                         return <th key={i} className="text-center">
                                             <span className={`${Tern(maxIndices.some((v) => i === v && maxIndices.length === 1), "text-success fw-bold", "")}`}>
                                                 {optionsArray[i]}
                                             </span>
                                         </th>
-                                    }))}
+                                    })}
                                 </tr>
                             </thead>
                             <tbody>
@@ -724,7 +729,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                             <td className="text-center">
                                                 {factors[factorI].rating}
                                             </td>
-                                            {GenerateArray(optionsArray.length, (optionI) => {
+                                            {sortedIndices.map(optionI => {
                                                 return (
                                                     <td key={optionI} className="text-center">
                                                         {(() => {
@@ -765,7 +770,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                 <tr>
                                     <td className="text-start text-muted">Raw Score</td>
                                     <td className="text-center">-</td>
-                                    {GenerateArray(optionsArray.length, (optionI) => {
+                                    {sortedIndices.map(optionI => {
                                         return (
                                             <td key={optionI} className="text-center text-muted">
                                                 {sums[optionI].toFixed(2)}
@@ -776,7 +781,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                 <tr>
                                     <td className="text-start fw-bold">Final Score</td>
                                     <td className="text-center">-</td>
-                                    {GenerateArray(optionsArray.length, (optionI) => {
+                                    {sortedIndices.map(optionI => {
                                         return (
                                             <td key={optionI} className={`text-center fw-bold ${Tern(maxIndices.some((v) => optionI === v && maxIndices.length === 1), "text-success", "")}`}>
                                                 {normalizedSums[optionI].toFixed(2)}
@@ -796,6 +801,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                         values={values}
                         sums={sums}
                         normalizedSums={normalizedSums}
+                        sortedIndices={sortedIndices}
                     />
                 
                 </div>

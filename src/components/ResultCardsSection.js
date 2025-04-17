@@ -11,6 +11,7 @@ import ResultCard from './ResultCard.js';
  * @param {Array} props.values - 2D array of weighted normalized values
  * @param {Array} props.sums - Array of raw scores
  * @param {Array} props.normalizedSums - Array of normalized final scores (0-100)
+ * @param {Array} props.sortedIndices - Array of indices sorted by score (low to high)
  */
 const ResultCardsSection = ({ 
     optionsArray, 
@@ -18,12 +19,17 @@ const ResultCardsSection = ({
     factors, 
     values, 
     sums, 
-    normalizedSums 
+    normalizedSums,
+    sortedIndices 
 }) => {
+    // Create a reversed sorted indices array (highest to lowest)
+    const reversedSortedIndices = [...sortedIndices].reverse();
+    
     return (
         <div className="d-md-none">
             <div className="row mb-4">
-                {optionsArray.map((optionName, optionI) => {
+                {reversedSortedIndices.map(optionI => {
+                    const optionName = optionsArray[optionI];
                     // Determine if this option is a winner (handles ties and single winner)
                     const isWinner = maxIndices.includes(optionI) && maxIndices.length === 1;
                     return (
