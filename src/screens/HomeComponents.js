@@ -471,18 +471,54 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
     }
 
     const factorsArray = Object.keys(ratingMatrix[optionsArray[0]]);
-    const values = GenerateArray(factorsArray.length, (factorI) =>
+    
+    // Calculate raw values first (rating * importance)
+    const rawValues = GenerateArray(factorsArray.length, (factorI) =>
         GenerateArray(optionsArray.length, (optionI) =>
             ratingMatrix[optionsArray[optionI]][factorsArray[factorI]] * factors.find((v) => v.name === factorsArray[factorI]).rating)
     );
+    
+    // Normalize values for each factor (row)
+    const normalizedValues = rawValues.map(factorScores => {
+        // Find min and max for this factor across all choices
+        const min = Math.min(...factorScores);
+        const max = Math.max(...factorScores);
+        const range = max - min;
+        
+        // If all values are the same, return array of 1s (all choices are equally good for this factor)
+        if (range === 0) {
+            return factorScores.map(() => 1);
+        }
+        
+        // Otherwise normalize between 0 and 1
+        return factorScores.map(score => (score - min) / range);
+    });
+    
+    // Calculate display values (normalized value * importance)
+    const values = normalizedValues.map((factorScores, factorI) => {
+        const factorName = factorsArray[factorI];
+        const factor = factors.find(v => v.name === factorName);
+        const importance = factor ? factor.rating : 1;
+        
+        // Multiply each normalized score by the factor importance
+        return factorScores.map(score => score * importance);
+    });
     const onPreviousStep = (e) => {
         previousRatingMatrix.current = ratingMatrix;
         previousFactors.current = factors;
         onChangeForm(e, 4);
     }
 
-    let sums = GenerateArray(optionsArray.length, (optionI) =>
-        values.reduce((a, b, factorI) => a + b[optionI], 0));
+    // Calculate weighted sums using normalized values and factor importance
+    // Calculate the simple sum for each option
+    let sums = GenerateArray(optionsArray.length, (optionI) => {
+        let sum = 0;
+        for (let factorI = 0; factorI < factorsArray.length; factorI++) {
+            // Simply add up the values (which are already normalized * importance)
+            sum += values[factorI][optionI];
+        }
+        return Math.round(sum * 10) / 10; // Round to 1 decimal place
+    });
 
     let max = sums[0];
     let maxIndices = [0];
@@ -512,76 +548,64 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                         <p className="mt-2 fw-bold">{Tern(allMax, "All", "Some")} of your options got the same score. Trying reassessing some of your factors?</p>
                     </div>
                 })()}
-                <div className="container"><hr />{
-                    (breakpointSelector(
-                        () => <div>
-                            <div className="text-muted mb-3">
-                                <span className="fw-bold">Legend: </span>
-                                <span>{GenerateArray(factors.length, (factorsI) => factorsArray[factorsI]).join("×")}</span>
-                                <span> = Score</span>
-                            </div>
-                            {
-                                GenerateArray(optionsArray.length, (optionsI) => {
-                                    return (
-                                        <div key={optionsI} className={`text-center ${Tern(sums[optionsI] === max && maxIndices.length === 1, "text-success", "")}`}>
-                                            <span className="fw-bold">{`${optionsArray[optionsI]}: `}</span>
-                                            <span>{GenerateArray(factors.length, (factorsI) => values[factorsI][optionsI]).join("×")}</span>
-                                            <span>{` = ${sums[optionsI]}`}</span>
-                                        </div>
-                                    )
-                                })
-                            }
-                            <hr />
-                        </div>
-                        , null,
-                        () => <table className="w-100 h6 table table-striped">
-                            <thead>
+                <div className="container"><hr />
+                    <div className="table-responsive">
+                        <table className="w-100 table table-striped table-hover">
+                            <thead className="bg-light">
                                 <tr>
-                                    <th></th>
+                                    <th className="text-start">Factors</th>
+                                    <th className="text-center">Importance</th>
                                     {GenerateArray(optionsArray.length, (i => {
-                                        return <th key={i} className="text-center py-2">
-                                            <span className={`${Tern(maxIndices.some((v) => i === v && maxIndices.length === 1), "text-success", "")}`}>
+                                        return <th key={i} className="text-center">
+                                            <span className={`${Tern(maxIndices.some((v) => i === v && maxIndices.length === 1), "text-success fw-bold", "")}`}>
                                                 {optionsArray[i]}
                                             </span>
                                         </th>
-                                    }
-                                    ))}
+                                    }))}
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     GenerateArray(factors.length, (factorI) =>
                                         <tr key={factorI}>
-                                            <td>{factors[factorI].name}</td>
+                                            <td className="text-start">{factors[factorI].name}</td>
+                                            <td className="text-center">
+                                                {factors[factorI].rating}
+                                            </td>
                                             {GenerateArray(optionsArray.length, (optionI) => {
-                                                return (<td key={optionI} className="text-center py-2">
-                                                    {`${values[factorI][optionI]}`}
-                                                </td>)
-                                            })
-                                            }
-                                        </tr>)
+                                                return (
+                                                    <td key={optionI} className="text-center">
+                                                        <div className="mb-0">{values[factorI][optionI].toFixed(1)}</div>
+                                                        <div className="text-muted" style={{ fontSize: '0.7rem', lineHeight: '1', marginTop: '-2px' }}>
+                                                            {normalizedValues[factorI][optionI].toFixed(1)} × {factors[factorI].rating}
+                                                        </div>
+                                                    </td>
+                                                )
+                                            })}
+                                        </tr>
+                                    )
                                 }
                             </tbody>
-                            <tfoot>
+                            <tfoot className="border-top border-dark">
                                 <tr>
-                                    <td></td>
+                                    <td className="text-start fw-bold">Final Score</td>
+                                    <td className="text-center">-</td>
                                     {GenerateArray(optionsArray.length, (optionI) => {
-                                        ;
-                                        return (<td key={optionI} className={`text-center py-2 fw-bold ${Tern(maxIndices.some((v) => optionI === v && maxIndices.length === 1), "text-success", "")}`}>
-                                            {sums[optionI]}
-                                        </td>)
-                                    })
-                                    }
+                                        return (
+                                            <td key={optionI} className={`text-center fw-bold ${Tern(maxIndices.some((v) => optionI === v && maxIndices.length === 1), "text-success", "")}`}>
+                                                {sums[optionI]}
+                                            </td>
+                                        )
+                                    })}
                                 </tr>
                             </tfoot>
                         </table>
-
-                    ))()
-                }
+                    </div>
+                
                 </div>
                 <p className="text-muted fs-6 text-center">Factors set with higher importance contribute more to an option's total score.</p>
                 <div className="d-flex flex-row justify-content-center">
-                    <button disabled={currentStep !== 5} className="mt-4 w-75 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}><i className="bi bi-skip-backward-fill me-2"></i>Reassess</button>
+                    <button disabled={currentStep !== 5} className="mt-4 w-75 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}><i className="bi bi-skip-backward-fill me-2"></i>Update Ratings</button>
                     <span className="ps-2"></span>
                     <div />
                 </div>
