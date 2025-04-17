@@ -1,5 +1,5 @@
 
-const maxChoices = 5;
-const maxFactors = 6;
+const maxChoices = 10;
+const maxFactors = 10;
 
 export { maxChoices, maxFactors };
