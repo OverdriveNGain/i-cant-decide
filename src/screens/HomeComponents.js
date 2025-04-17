@@ -727,10 +727,33 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                                             {GenerateArray(optionsArray.length, (optionI) => {
                                                 return (
                                                     <td key={optionI} className="text-center">
-                                                        <div className="mb-0">{values[factorI][optionI].toFixed(1)}</div>
-                                                        <div className="text-muted" style={{ fontSize: '0.7rem', lineHeight: '1', marginTop: '-2px' }}>
-                                                            {normalizedValues[factorI][optionI].toFixed(1)} × {factors[factorI].rating}
-                                                        </div>
+                                                        {(() => {
+                                                            // Get all scores for this factor
+                                                            const factorScores = values[factorI];
+                                                            // Find the maximum score for this factor
+                                                            const maxScore = Math.max(...factorScores);
+                                                            // Calculate thresholds based on max value
+                                                            const lowerThreshold = maxScore / 3;
+                                                            const upperThreshold = (maxScore * 2) / 3;
+                                                            const score = values[factorI][optionI];
+                                                            
+                                                            // Determine text color based on score relative to max
+                                                            let textColorClass = "";
+                                                            if (score >= upperThreshold) {
+                                                                textColorClass = "text-success";
+                                                            } else if (score <= lowerThreshold) {
+                                                                textColorClass = "text-danger";
+                                                            }
+                                                            
+                                                            return (
+                                                                <>
+                                                                    <div className={`mb-0 ${textColorClass}`}>{score.toFixed(1)}</div>
+                                                                    <div className="text-muted" style={{ fontSize: '0.7rem', lineHeight: '1', marginTop: '-2px' }}>
+                                                                        {normalizedValues[factorI][optionI].toFixed(1)} × {factors[factorI].rating}
+                                                                    </div>
+                                                                </>
+                                                            );
+                                                        })()}
                                                     </td>
                                                 )
                                             })}

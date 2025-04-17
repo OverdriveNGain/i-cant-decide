@@ -56,7 +56,28 @@ const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, 
                                             : `0`;
                                     })()}
                                 </div>
-                                <span>{values[factorI][optionIndex].toFixed(1)}</span>
+                                {(() => {
+                                    // Get all scores for this factor
+                                    const factorScores = values[factorI];
+                                    // Find the maximum score for this factor
+                                    const maxScore = Math.max(...factorScores);
+                                    // Calculate thresholds based on max value
+                                    const lowerThreshold = maxScore / 3;
+                                    const upperThreshold = (maxScore * 2) / 3;
+                                    const score = values[factorI][optionIndex];
+                                    
+                                    // Determine text color based on score relative to max
+                                    let textColorClass = "";
+                                    if (score >= upperThreshold) {
+                                        textColorClass = "text-success";
+                                    } else if (score <= lowerThreshold) {
+                                        textColorClass = "text-danger";
+                                    }
+                                    
+                                    return (
+                                        <span className={textColorClass}>{score.toFixed(1)}</span>
+                                    );
+                                })()}
                             </div>
                         </div>
                     ))}
