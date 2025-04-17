@@ -3,6 +3,7 @@ import { maxChoices, maxFactors } from "../helpers/constants";
 import Sketch from "react-p5";
 import { GenerateArray, Pd, Tern } from "../helpers/func";
 import { useEffect, useRef, useState } from "react";
+import ResultCardsSection from "../components/ResultCardsSection";
 
 // Helper function to prevent form submission when Enter key is pressed
 const preventEnterKeySubmission = (e) => {
@@ -701,7 +702,8 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                     </div>
                 })()}
                 <div className="container"><hr />
-                    <div className="table-responsive">
+                    {/* Standard table for medium screens and up */}
+                    <div className="table-responsive d-none d-md-block">
                         <table className="w-100 table table-striped table-hover">
                             <thead className="bg-light">
                                 <tr>
@@ -764,6 +766,16 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                             </tfoot>
                         </table>
                     </div>
+                    
+                    {/* Mobile-optimized cards for small screens */}
+                    <ResultCardsSection 
+                        optionsArray={optionsArray}
+                        maxIndices={maxIndices}
+                        factors={factors}
+                        values={values}
+                        sums={sums}
+                        normalizedSums={normalizedSums}
+                    />
                 
                 </div>
                 <p className="text-muted fs-6 text-center">Factors set with higher importance contribute more to an option's total score.</p>
@@ -772,7 +784,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                     <span className="ps-2"></span>
                     <div />
                 </div>
-                <small className="text-center o-50 d-block mt-5">In This application is provided for informational purposes only. The decisions you make based on the results are your sole responsibility. The creators and maintainers of this tool make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, or suitability of the information provided. Any reliance you place on such information is strictly at your own risk.</small>
+                <small className="text-center o-50 d-block mt-5">This application is provided for informational purposes only. The decisions you make based on the results are your sole responsibility. The creators and maintainers of this tool make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, or suitability of the information provided. Any reliance you place on such information is strictly at your own risk.</small>
             </div>
         </form >
     );

@@ -4,7 +4,7 @@ import useResize from "../hooks/useResize";
 // import Math from 'math';
 import { LandingForm1, LandingForm2, LandingForm3, LandingForm4, Results } from "./HomeComponents";
 import { STORAGE_KEYS, saveToLocalStorage, getFromLocalStorage, determineStartingStep, clearAllStoredData } from "../helpers/storage";
-import ConfirmationModal from "../components/ConfirmationModal";
+import ConfirmationModal from "../components/ConfirmationModal.js";
 
 const Home = () => {
     const form1 = useRef(null)
