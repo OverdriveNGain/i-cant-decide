@@ -326,33 +326,31 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
         }
     }, [factors]);
     
-    // Initialize factors from various sources
+    // Initialize factors from various sources and update when initialFactors change
     useEffect(() => {
-        // If we already have factors, don't reset them
-        if (factors.length > 0) {
-            return;
-        }
-        
-        // If we have lastFactors from previous navigation, use those
-        if (lastFactors.current !== null) {
-            const temp = [];
-            for (const initialFactor of initialFactors) {
-                const factorName = initialFactor.name;
-                const oldIndex = lastFactors.current.findIndex((v) => v.name === factorName);
-                if (oldIndex !== -1)
-                    temp.push({...lastFactors.current[oldIndex]});
-                else
-                    temp.push({...initialFactor});
-            }
-            setFactors(temp);
-            return;
-        }
-        
-        // Otherwise, use initialFactors
+        // Always update factors when initialFactors change
         if (initialFactors && initialFactors.length > 0) {
+            // If we have lastFactors from previous navigation, merge them with initialFactors
+            if (lastFactors.current !== null) {
+                const temp = [];
+                for (const initialFactor of initialFactors) {
+                    const factorName = initialFactor.name;
+                    const oldIndex = lastFactors.current.findIndex((v) => v.name === factorName);
+                    if (oldIndex !== -1)
+                        temp.push({...lastFactors.current[oldIndex]});
+                    else
+                        temp.push({...initialFactor});
+                }
+                setFactors(temp);
+                // Reset lastFactors after using it to prevent stale data
+                lastFactors.current = null;
+                return;
+            }
+            
+            // Otherwise, use initialFactors directly
             setFactors(initialFactors);
         }
-    }, [initialFactors, factors.length])
+    }, [initialFactors]) // Only depend on initialFactors changes
 
     if (initialFactors.length === 0)
         return null
@@ -780,7 +778,7 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
                 </div>
                 <p className="text-muted fs-6 text-center">Factors set with higher importance contribute more to an option's total score.</p>
                 <div className="d-flex flex-row justify-content-center">
-                    <button disabled={currentStep !== 5} className="mt-4 w-75 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}><i className="bi bi-skip-backward-fill me-2"></i>Update Ratings</button>
+                    <button disabled={currentStep !== 5} className="mt-4 w-75 btn btn rounded-1 btn-outline-secondary" onClick={onPreviousStep}><i className="bi bi-arrow-left me-2"></i>Update Ratings</button>
                     <span className="ps-2"></span>
                     <div />
                 </div>
