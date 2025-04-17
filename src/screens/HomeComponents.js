@@ -55,7 +55,21 @@ const LandingBg = (props) => {
 const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
     const { breakpointSelector } = useResize();
 
-    const [choices, setChoices] = useState(["", ""])
+    // Initialize with choices from props or default empty values
+    const [choices, setChoices] = useState(() => {
+        // Get choices from localStorage via Home component
+        const existingChoices = window.localStorage.getItem('icd_choices');
+        if (existingChoices) {
+            try {
+                const parsedChoices = JSON.parse(existingChoices);
+                return parsedChoices.length > 0 ? parsedChoices : ["", ""];
+            } catch (e) {
+                console.error("Error parsing choices from localStorage", e);
+                return ["", ""];
+            }
+        }
+        return ["", ""];
+    });
     const [errorMessage, setErrorMessage] = useState("")
 
     const onChoiceRemove = (e, i) => { Pd(e, () => { setChoices(choices.filter((v, j) => j !== i)) }) }
@@ -133,7 +147,29 @@ const LandingForm1 = ({ onChangeForm, currentStep, upperSetChoices }) => {
 const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep, existingFactors }) => {
     const { breakpointSelector } = useResize();
 
-    const [factors, setFactors] = useState(["", ""])
+    // Initialize with factors from localStorage or default empty values
+    const [factors, setFactors] = useState(() => {
+        // First check if we have existingFactors from props
+        if (existingFactors && existingFactors.length > 0) {
+            return existingFactors.map(factor => factor.name);
+        }
+        
+        // Otherwise check localStorage
+        const storedFactors = window.localStorage.getItem('icd_factors');
+        if (storedFactors) {
+            try {
+                const parsedFactors = JSON.parse(storedFactors);
+                if (parsedFactors && parsedFactors.length > 0) {
+                    return parsedFactors.map(factor => factor.name);
+                }
+            } catch (e) {
+                console.error("Error parsing factors from localStorage", e);
+            }
+        }
+        
+        // Default empty values
+        return ["", ""];
+    });
     const [errorMessage, setErrorMessage] = useState("")
 
     const onFactorRemove = (e, i) => { Pd(e, () => { setFactors(factors.filter((v, j) => j !== i)) }) }
@@ -223,7 +259,29 @@ const LandingForm2 = ({ upperSetFactors, onChangeForm, currentStep, existingFact
 
 const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFactors }) => {
     const lastFactors = useRef(null);
-    const [factors, setFactors] = useState([])
+    
+    // Initialize factors from props or localStorage
+    const [factors, setFactors] = useState(() => {
+        // First check if we have initialFactors from props
+        if (initialFactors && initialFactors.length > 0) {
+            return initialFactors;
+        }
+        
+        // Otherwise check localStorage
+        const storedFactors = window.localStorage.getItem('icd_factors');
+        if (storedFactors) {
+            try {
+                const parsedFactors = JSON.parse(storedFactors);
+                if (parsedFactors && parsedFactors.length > 0) {
+                    return parsedFactors;
+                }
+            } catch (e) {
+                console.error("Error parsing factors from localStorage", e);
+            }
+        }
+        
+        return [];
+    })
 
     const onFactorRatingChange = (e, factor) => {
         const newFactors = factors.map((v) => {
@@ -234,13 +292,17 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
 
     const nextStepClick = (e) => {
         e.preventDefault();
+        // Save to localStorage directly as well as updating parent state
+        window.localStorage.setItem('icd_factors', JSON.stringify(factors));
         upperSetFactors(factors);
         onChangeForm(e, 4);
     }
 
     const lastStepClick = (e) => {
         e.preventDefault();
+        // Save current factors state before navigating back
         lastFactors.current = factors;
+        window.localStorage.setItem('icd_factors', JSON.stringify(factors));
         onChangeForm(e, 2);
     }
 
@@ -256,23 +318,40 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
         )
     }
 
+    // Save factor ratings whenever they change
     useEffect(() => {
-        if (lastFactors.current === null) {
-            setFactors(initialFactors);
+        if (factors.length > 0) {
+            window.localStorage.setItem('icd_factors', JSON.stringify(factors));
+        }
+    }, [factors]);
+    
+    // Initialize factors from various sources
+    useEffect(() => {
+        // If we already have factors, don't reset them
+        if (factors.length > 0) {
             return;
         }
         
-        const temp = [];
-        for (const initialFactor of initialFactors) {
-            const factorName = initialFactor.name;
-            const oldIndex = lastFactors.current.findIndex((v) => v.name === factorName);
-            if (oldIndex !== -1)
-                temp.push({...lastFactors.current[oldIndex]});
-            else
-                temp.push({...initialFactor});
+        // If we have lastFactors from previous navigation, use those
+        if (lastFactors.current !== null) {
+            const temp = [];
+            for (const initialFactor of initialFactors) {
+                const factorName = initialFactor.name;
+                const oldIndex = lastFactors.current.findIndex((v) => v.name === factorName);
+                if (oldIndex !== -1)
+                    temp.push({...lastFactors.current[oldIndex]});
+                else
+                    temp.push({...initialFactor});
+            }
+            setFactors(temp);
+            return;
         }
-        setFactors(temp);
-    }, [initialFactors])
+        
+        // Otherwise, use initialFactors
+        if (initialFactors && initialFactors.length > 0) {
+            setFactors(initialFactors);
+        }
+    }, [initialFactors, factors.length])
 
     if (initialFactors.length === 0)
         return null
@@ -332,7 +411,21 @@ const getRatingMatrix = (choices, factors, oldRatingMatrix) => {
     return newRatingMatrix;
 }
 const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRatingMatrix }) => {
+    // Initialize oldRatingMatrix from localStorage if available
     const oldRatingMatrix = useRef({});
+    
+    // Load saved rating matrix from localStorage on component mount
+    useEffect(() => {
+        const storedMatrix = window.localStorage.getItem('icd_rating_matrix');
+        if (storedMatrix) {
+            try {
+                oldRatingMatrix.current = JSON.parse(storedMatrix);
+            } catch (e) {
+                console.error("Error parsing rating matrix from localStorage", e);
+            }
+        }
+    }, []);
+    
     const [ratingMatrix, setRatingMatrix] = useState({})
     const { breakpointSelector } = useResize();
 
@@ -342,17 +435,24 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
             copiedRatingMatrix[property] = ({ ...ratingMatrix[property] });
         }
         copiedRatingMatrix[choice][factorName] = parseInt(rating);
-        setRatingMatrix(copiedRatingMatrix)
+        setRatingMatrix(copiedRatingMatrix);
+        
+        // Save to localStorage immediately when ratings change
+        window.localStorage.setItem('icd_rating_matrix', JSON.stringify(copiedRatingMatrix));
     }
     const nextStepClick = (e) => {
         e.preventDefault();
         oldRatingMatrix.current = ratingMatrix;
+        // Save to localStorage before proceeding to next step
+        window.localStorage.setItem('icd_rating_matrix', JSON.stringify(ratingMatrix));
         upperSetRatingMatrix(ratingMatrix);
         onChangeForm(e, 5);
     }
     const previousStepClick = (e) => {
         e.preventDefault(e);
         oldRatingMatrix.current = ratingMatrix;
+        // Save to localStorage before going back
+        window.localStorage.setItem('icd_rating_matrix', JSON.stringify(ratingMatrix));
         onChangeForm(e, 3);
     }
     const ratingMatrixIsUpdated = () => {
@@ -390,7 +490,44 @@ const LandingForm4 = ({ choices, factors, onChangeForm, currentStep, upperSetRat
     }
 
     useEffect(() => {
-        setRatingMatrix(getRatingMatrix(choices, factors, oldRatingMatrix.current))
+        // First try to get matrix from localStorage
+        const storedMatrix = window.localStorage.getItem('icd_rating_matrix');
+        if (storedMatrix) {
+            try {
+                const parsedMatrix = JSON.parse(storedMatrix);
+                // Check if the stored matrix is compatible with current choices and factors
+                let isCompatible = true;
+                
+                // Check if all current choices exist in the stored matrix
+                for (const choice of choices) {
+                    if (!parsedMatrix[choice]) {
+                        isCompatible = false;
+                        break;
+                    }
+                    
+                    // Check if all current factors exist for this choice
+                    for (const factor of factors) {
+                        if (parsedMatrix[choice][factor.name] === undefined) {
+                            isCompatible = false;
+                            break;
+                        }
+                    }
+                    
+                    if (!isCompatible) break;
+                }
+                
+                if (isCompatible) {
+                    // If stored matrix is compatible, use it
+                    setRatingMatrix(parsedMatrix);
+                    return;
+                }
+            } catch (e) {
+                console.error("Error parsing rating matrix from localStorage", e);
+            }
+        }
+        
+        // Fall back to generating a new matrix if localStorage data isn't usable
+        setRatingMatrix(getRatingMatrix(choices, factors, oldRatingMatrix.current));
     }, [choices, factors])
 
     if (!ratingMatrixIsUpdated())
