@@ -1,5 +1,5 @@
 import Home from './screens/Home';
-import { LandingBg } from './screens/HomeComponents';
+import LandingBg from './components/LandingBg';
 
 function App() {
   return (
