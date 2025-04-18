@@ -310,7 +310,7 @@ const LandingForm3 = ({ initialFactors, onChangeForm, currentStep, upperSetFacto
     const ratingToWords = (rating) => {
         const ratings = [
             "...is not that important",
-            "...is a little important",
+            "...is a bit important",
             "...is somewhat important",
             "...is important",
             "...is very important"];
