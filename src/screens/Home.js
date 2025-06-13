@@ -116,9 +116,8 @@ const Home = () => {
                 
                 <p className="text-center text-muted o-50 mb-md-5 mt-md-0 mt-4 mb-4">A Rational Helper for the Indecisive</p>
                 
-                <p className="text-center">Can't pick the right bag to buy? Don't know which laptop is worth buying the most? Don't know which college to go for? <strong>You've come to the right place.</strong></p>
-                <p className="text-center">For example; let's say you have to pick between 3 laptops, and each laptop has different ratings in their CPU, batteries, RAM, etc. You thought that in general, these laptops are okay overall, but you want the best. Not only that, but you value RAM over battery quality, but not as much as CPU performance. </p>
-                <p className="text-center fw-bold mb-5">So yeah, this tool aims to solve problems like that.</p>
+                <p className="text-center fw-bold mb-2">Struggling with complex purchasing decisions? Evaluating multiple options with competing priorities? This tool provides a structured approach to making well-informed decisions.</p>
+                <p className="text-center mb-5 text-sm">This tool uses normalized weighted sums to calculate the best option, based on your the relative importance of each factor of which choice is evaluated.</p>
                 <div style={{ width: `${breakpointSelector(100, 90, 80, 70, 60)}%`, margin: "auto" }}>
                     <FormsSection
                         stePdata={stePdata}
