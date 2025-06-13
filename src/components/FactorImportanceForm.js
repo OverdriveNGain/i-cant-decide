@@ -134,10 +134,10 @@ const FactorImportanceForm = ({ initialFactors, onChangeForm, currentStep, upper
                     </div>
                     <div className="row">
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button className="w-100 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}><i className="bi bi-arrow-left me-2" />Previous Step</button>
+                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-outline-secondary" onClick={lastStepClick}><i className="bi bi-arrow-left me-2" />Previous Step</button>
                         </div>
                         <div className="mt-2 col-12 col-md-6 px-0 px-md-2 pb-md-2">
-                            <button className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2" />Next Step</button>
+                            <button disabled={currentStep !== 3} className="w-100 btn rounded-1 btn-primary text-white" onClick={nextStepClick}><i className="bi bi-arrow-right me-2" />Next Step</button>
                         </div>
                     </div>
                 </div>
