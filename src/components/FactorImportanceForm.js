@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GenerateArray, Tern } from "../helpers/func";
+import { GenerateArray } from "../helpers/func";
 import { preventEnterKeySubmission } from "../helpers/utils";
+
+const normalizeFactorList = (list) =>
+    list.map((f) =>
+        typeof f === 'string'
+            ? { name: f, rating: 3 }
+            : { name: (f && f.name) || '', rating: f.rating ?? 3 }
+    );
 
 /**
  * Step 3: Form for rating the importance of each factor
@@ -18,7 +25,7 @@ const FactorImportanceForm = ({ initialFactors, onChangeForm, currentStep, upper
     const [factors, setFactors] = useState(() => {
         // First check if we have initialFactors from props
         if (initialFactors && initialFactors.length > 0) {
-            return initialFactors;
+            return normalizeFactorList(initialFactors);
         }
         
         // Otherwise check localStorage
@@ -27,7 +34,7 @@ const FactorImportanceForm = ({ initialFactors, onChangeForm, currentStep, upper
             try {
                 const parsedFactors = JSON.parse(storedFactors);
                 if (parsedFactors && parsedFactors.length > 0) {
-                    return parsedFactors;
+                    return normalizeFactorList(parsedFactors);
                 }
             } catch (e) {
                 console.error("Error parsing factors from localStorage", e);
@@ -83,25 +90,23 @@ const FactorImportanceForm = ({ initialFactors, onChangeForm, currentStep, upper
     useEffect(() => {
         // Always update factors when initialFactors change
         if (initialFactors && initialFactors.length > 0) {
-            // If we have lastFactors from previous navigation, merge them with initialFactors
+            const normalizedInitial = normalizeFactorList(initialFactors);
             if (lastFactors.current !== null) {
                 const temp = [];
-                for (const initialFactor of initialFactors) {
-                    const factorName = initialFactor.name;
-                    const oldIndex = lastFactors.current.findIndex((v) => v.name === factorName);
+                for (const initialFactor of normalizedInitial) {
+                    const name = initialFactor.name;
+                    const oldIndex = lastFactors.current.findIndex((v) => v.name === name);
                     if (oldIndex !== -1)
                         temp.push({...lastFactors.current[oldIndex]});
                     else
                         temp.push({...initialFactor});
                 }
                 setFactors(temp);
-                // Reset lastFactors after using it to prevent stale data
                 lastFactors.current = null;
                 return;
             }
-            
-            // Otherwise, use initialFactors directly
-            setFactors(initialFactors);
+
+            setFactors(normalizedInitial);
         }
     }, [initialFactors]) // Only depend on initialFactors changes
 

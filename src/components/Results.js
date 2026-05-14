@@ -1,37 +1,41 @@
-import React, { useRef } from 'react';
+import React, { useContext } from 'react';
 import { GenerateArray, Tern } from "../helpers/func";
-import useResize from "../hooks/useResize";
 import ResultCardsSection from "./ResultCardsSection";
+import { AppStateContext } from '../contexts/AppStateContext';
 
 /**
  * Results component to display the final decision scores and recommendations
  * 
- * @param {Object} props - Component props
- * @param {Object} props.ratingMatrix - Matrix of ratings for each choice on each factor
- * @param {Array} props.factors - Array of factors with importance ratings
  * @param {Function} props.onChangeForm - Function to navigate between forms
- * @param {number} props.currentStep - Current active step
  */
-const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
-    const previousRatingMatrix = useRef(null);
-    const previousFactors = useRef(null);
-    const optionsArray = Object.keys(ratingMatrix);
-
-    const { breakpointSelector } = useResize();
+const Results = () => {
+    const { ratingMatrix, factors, stepData, onChangeForm } = useContext(AppStateContext);
+    const currentStep = stepData[0];
 
     if (currentStep !== 5) {
-        if (previousFactors.current == null)
-            return null
-        ratingMatrix = previousRatingMatrix.current;
-        factors = previousFactors.current;
+        return null;
     }
+
+    if (
+        !ratingMatrix ||
+        typeof ratingMatrix !== 'object' ||
+        Array.isArray(ratingMatrix) ||
+        Object.keys(ratingMatrix).length === 0
+    ) {
+        return null;
+    }
+
+    const optionsArray = Object.keys(ratingMatrix);
 
     const factorsArray = Object.keys(ratingMatrix[optionsArray[0]]);
     
     // Calculate raw values first (rating * importance)
     const rawValues = GenerateArray(factorsArray.length, (factorI) =>
-        GenerateArray(optionsArray.length, (optionI) =>
-            ratingMatrix[optionsArray[optionI]][factorsArray[factorI]] * factors.find((v) => v.name === factorsArray[factorI]).rating)
+        GenerateArray(optionsArray.length, (optionI) => {
+            const fac = factors.find((v) => v.name === factorsArray[factorI]);
+            const importance = fac ? fac.rating : 1;
+            return ratingMatrix[optionsArray[optionI]][factorsArray[factorI]] * importance;
+        })
     );
     
     // Normalize values for each factor (row)
@@ -60,8 +64,6 @@ const Results = ({ ratingMatrix, factors, onChangeForm, currentStep }) => {
         return factorScores.map(score => score * importance);
     });
     const onPreviousStep = (e) => {
-        previousRatingMatrix.current = ratingMatrix;
-        previousFactors.current = factors;
         onChangeForm(e, 4);
     }
 

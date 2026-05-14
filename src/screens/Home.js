@@ -6,6 +6,7 @@ import ConfirmationModal from "../components/ConfirmationModal";
 import Header from "../components/Header";
 import FormsSection from "../components/FormsSection";
 import { clearAllStoredData, determineStartingStep, getFromLocalStorage, saveToLocalStorage, STORAGE_KEYS } from "../helpers/storage";
+import { AppStateContext } from "../contexts/AppStateContext";
 
 const Home = () => {
     const form1 = useRef(null)
@@ -17,10 +18,8 @@ const Home = () => {
     // Initialize state from localStorage or use default values
     const [choices, setChoices] = useState(() => getFromLocalStorage(STORAGE_KEYS.CHOICES, []))
     const [factors, setFactors] = useState(() => getFromLocalStorage(STORAGE_KEYS.FACTORS, []))
-    const [ratingMatrix, setRatingMatrix] = useState(() => getFromLocalStorage(STORAGE_KEYS.RATING_MATRIX, []))
-
-    // Determine the appropriate starting step based on saved data
-    const [stePdata, setStepData] = useState(() => determineStartingStep()); // step, and maxStep
+    const [ratingMatrix, setRatingMatrix] = useState(() => getFromLocalStorage(STORAGE_KEYS.RATING_MATRIX, {}))
+    const [stepData, setStepData] = useState(() => determineStartingStep()); // step, and maxStep
 
     const { breakpointSelector } = useResize();
 
@@ -45,12 +44,12 @@ const Home = () => {
     }, [ratingMatrix]);
 
     useEffect(() => {
-        saveToLocalStorage(STORAGE_KEYS.STEP_DATA, stePdata);
-    }, [stePdata]);
+        saveToLocalStorage(STORAGE_KEYS.STEP_DATA, stepData);
+    }, [stepData]);
 
     const onChangeForm = (e, nextStage) => { 
         Pd(e, () => { 
-            setStepData([nextStage, Math.max(nextStage, stePdata[1])]); 
+            setStepData((prev) => [nextStage, Math.max(nextStage, prev[1])]); 
         }); 
     }
 
@@ -75,7 +74,7 @@ const Home = () => {
 
         setChoices([]);
         setFactors([]);
-        setRatingMatrix([]);
+        setRatingMatrix({});
         setStepData([1, 1]);
         
         setShowConfirmModal(false);
@@ -83,7 +82,7 @@ const Home = () => {
 
     useLayoutEffect(() => {
         const options = true;
-        switch (stePdata[0]) {
+        switch (stepData[0]) {
             case 1:
                 form1.current.scrollIntoView(options);
                 break;
@@ -99,13 +98,23 @@ const Home = () => {
             default:
                 form5.current.scrollIntoView(options);
         }
-    }, [stePdata])
+    }, [stepData])
 
     return (
-        <div>
-            <div className="container">
-                <div style={{ height: "2vh" }} />
-                <Header onClearData={(e) => openConfirmModal(e)} />
+        <AppStateContext.Provider value={{
+            choices,
+            setChoices,
+            factors,
+            setFactors,
+            ratingMatrix,
+            setRatingMatrix,
+            stepData,
+            onChangeForm
+        }}>
+            <div>
+                <div className="container">
+                    <div style={{ height: "2vh" }} />
+                    <Header onClearData={(e) => openConfirmModal(e)} />
                 
                 {/* Confirmation Modal Component */}
                 <ConfirmationModal 
@@ -120,13 +129,6 @@ const Home = () => {
                 <p className="text-center mb-5 text-sm">This tool uses normalized weighted sums to calculate the best option, based on your the relative importance of each factor of which each choice is evaluated.</p>
                 <div style={{ width: `${breakpointSelector(100, 90, 80, 70, 60)}%`, margin: "auto" }}>
                     <FormsSection
-                        stePdata={stePdata}
-                        setChoices={setChoices}
-                        setFactors={setFactors}
-                        setRatingMatrix={setRatingMatrix}
-                        onChangeForm={onChangeForm}
-                        factors={factors}
-                        choices={choices}
                         form1={form1}
                         form2={form2}
                         form3={form3}
@@ -135,12 +137,13 @@ const Home = () => {
                 </div>
             </div>
             <div ref={form5} style={{
-                opacity: Tern(stePdata[0] === 5, 1.0, 0.4),
-                display: Tern(stePdata[1] >= 5, "block", "none")
+                opacity: Tern(stepData[0] === 5, 1.0, 0.4),
+                display: Tern(stepData[1] >= 5, "block", "none")
             }}>
-                <Results ratingMatrix={ratingMatrix} factors={factors} onChangeForm={onChangeForm} currentStep={stePdata[0]} />
+                <Results />
             </div>
         </div>
+        </AppStateContext.Provider>
     );
 }
 

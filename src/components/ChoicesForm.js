@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { GenerateArray, Pd, Tern } from "../helpers/func";
 import useResize from "../hooks/useResize";
 import { maxChoices } from "../helpers/constants";
 import { preventEnterKeySubmission } from "../helpers/utils";
+import { AppStateContext } from '../contexts/AppStateContext';
 
 /**
  * Step 1: Form for entering choices/options to compare
@@ -10,27 +11,18 @@ import { preventEnterKeySubmission } from "../helpers/utils";
  * @param {Object} props - Component props
  * @param {Function} props.onChangeForm - Function to navigate between forms
  * @param {number} props.currentStep - Current active step
- * @param {Function} props.upperSetChoices - Function to update choices in parent component
  */
-const ChoicesForm = ({ onChangeForm, currentStep, upperSetChoices }) => {
+const ChoicesForm = ({ onChangeForm, currentStep }) => {
     const { breakpointSelector } = useResize();
+    const { choices, setChoices } = useContext(AppStateContext);
 
-    // Initialize with choices from props or default empty values
-    const [choices, setChoices] = useState(() => {
-        // Get choices from localStorage via Home component
-        const existingChoices = window.localStorage.getItem('icd_choices');
-        if (existingChoices) {
-            try {
-                const parsedChoices = JSON.parse(existingChoices);
-                return parsedChoices.length > 0 ? parsedChoices : ["", ""];
-            } catch (e) {
-                console.error("Error parsing choices from localStorage", e);
-                return ["", ""];
-            }
-        }
-        return ["", ""];
-    });
     const [errorMessage, setErrorMessage] = useState("")
+
+    useEffect(() => {
+        if (currentStep === 1 && choices.length === 0) {
+            setChoices(["", ""]);
+        }
+    }, [currentStep, choices.length, setChoices]);
 
     const onChoiceRemove = (e, i) => { Pd(e, () => { setChoices(choices.filter((v, j) => j !== i)) }) }
     const onChoiceNew = (e) => { Pd(e, () => { setChoices([...choices, ""]) }) }
@@ -54,7 +46,6 @@ const ChoicesForm = ({ onChangeForm, currentStep, upperSetChoices }) => {
             setErrorMessage("Remove any duplicate choices")
         else {
             setErrorMessage("")
-            upperSetChoices(choices);
             onChangeForm(e, 2);
         }
     }

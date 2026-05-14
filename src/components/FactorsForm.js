@@ -1,56 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { GenerateArray, Pd, Tern } from "../helpers/func";
 import useResize from "../hooks/useResize";
 import { maxFactors } from "../helpers/constants";
 import { preventEnterKeySubmission } from "../helpers/utils";
+import { AppStateContext } from '../contexts/AppStateContext';
+
+const factorNameRaw = (f) => (typeof f === 'string' ? f : (f && f.name) || '') || '';
+
+const toFactorObjects = (list) =>
+    list.map((f) =>
+        typeof f === 'string'
+            ? { name: f.trim(), rating: 3 }
+            : { name: factorNameRaw(f).trim(), rating: f.rating ?? 3 }
+    );
 
 /**
  * Step 2: Form for entering factors to evaluate choices on
  * 
  * @param {Object} props - Component props
- * @param {Function} props.upperSetFactors - Function to update factors in parent component
  * @param {Function} props.onChangeForm - Function to navigate between forms
- * @param {number} props.currentStep - Current active step
- * @param {Array} props.existingFactors - Existing factors from parent component
  */
-const FactorsForm = ({ upperSetFactors, onChangeForm, currentStep, existingFactors }) => {
+const FactorsForm = ({ onChangeForm }) => {
     const { breakpointSelector } = useResize();
 
-    // Initialize with factors from localStorage or default empty values
-    const [factors, setFactors] = useState(() => {
-        // First check if we have existingFactors from props
-        if (existingFactors && existingFactors.length > 0) {
-            return existingFactors.map(factor => factor.name);
-        }
-        
-        // Otherwise check localStorage
-        const storedFactors = window.localStorage.getItem('icd_factors');
-        if (storedFactors) {
-            try {
-                const parsedFactors = JSON.parse(storedFactors);
-                if (parsedFactors && parsedFactors.length > 0) {
-                    return parsedFactors.map(factor => factor.name);
-                }
-            } catch (e) {
-                console.error("Error parsing factors from localStorage", e);
-            }
-        }
-        
-        // Default empty values
-        return ["", ""];
-    });
+    const { factors, setFactors, stepData } = useContext(AppStateContext);
+    const currentStep = stepData[0];
+
     const [errorMessage, setErrorMessage] = useState("")
 
+    useEffect(() => {
+        if (currentStep === 2 && factors.length === 0) {
+            setFactors([{ name: '', rating: 3 }, { name: '', rating: 3 }]);
+        }
+    }, [currentStep, factors.length, setFactors]);
+
     const onFactorRemove = (e, i) => { Pd(e, () => { setFactors(factors.filter((v, j) => j !== i)) }) }
-    const onFactorNew = (e) => { Pd(e, () => { setFactors([...factors, ""]) }) }
-    const onFactorChange = (e, index) => { setFactors(factors.map((v, i) => Tern(i === index, e.target.value, factors[i]))); }
+    const onFactorNew = (e) => { Pd(e, () => { setFactors([...factors, { name: '', rating: 3 }]) }) }
+    const onFactorChange = (e, index) => {
+        const v = e.target.value;
+        setFactors(factors.map((f, i) => {
+            if (i !== index) return typeof f === 'string' ? { name: f, rating: 3 } : { ...f };
+            return typeof f === 'string' ? { name: v, rating: 3 } : { ...f, name: v };
+        }));
+    };
 
     const nextStepClick = (e) => {
         const duplicatesExist = () => {
             const tester = {};
-            for (let choice of factors) {
-                if (tester[choice] == null)
-                    tester[choice] = true;
+            for (const f of factors) {
+                const n = factorNameRaw(f).trim();
+                if (tester[n] == null)
+                    tester[n] = true;
                 else
                     return true;
             }
@@ -58,20 +58,13 @@ const FactorsForm = ({ upperSetFactors, onChangeForm, currentStep, existingFacto
         }
 
         e.preventDefault();
-        if (factors.some((v, i) => v.length === 0))
+        if (factors.some((f) => factorNameRaw(f).trim().length === 0))
             setErrorMessage("Please fill out all blank fields")
         else if (duplicatesExist())
             setErrorMessage("Remove any duplicate factors")
         else {
             setErrorMessage("")
-            const updatedFactors = factors.map((factorName) => {
-                const existingFactor = existingFactors?.find(f => f.name === factorName);
-                return { 
-                    name: factorName, 
-                    rating: existingFactor ? existingFactor.rating : 3 
-                };
-            });
-            upperSetFactors(updatedFactors);
+            setFactors(toFactorObjects(factors));
             onChangeForm(e, 3);
         }
     }
@@ -92,7 +85,7 @@ const FactorsForm = ({ upperSetFactors, onChangeForm, currentStep, existingFacto
                                     (index) => {
                                         const optional = index > 1;
                                         return <div key={index} className="d-flex flex-row py-1 position-relative">
-                                            <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={factors[index]} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)} onKeyDown={preventEnterKeySubmission} />
+                                            <input disabled={currentStep !== 2} className="d-inline-block form-control form-control rounded-1" style={{ paddingRight: Tern(optional, "2.2em", "0em") }} value={factorNameRaw(factors[index])} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorChange(e, index)} onKeyDown={preventEnterKeySubmission} />
                                             {
                                                 Tern(index > 1,
                                                     <button disabled={currentStep !== 2} className="rounded-circle btn position-absolute py-auto" style={{ right: "0px" }} onClick={(e) => { onFactorRemove(e, index); }} >

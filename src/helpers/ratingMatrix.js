@@ -1,4 +1,44 @@
 /**
+ * Whether a rating matrix has exactly the same choice and factor keys
+ * as the current lists (order-sensitive, matches how the UI builds the matrix).
+ *
+ * @param {Object} matrix
+ * @param {string[]} choices
+ * @param {{ name: string }[]} factors
+ * @returns {boolean}
+ */
+export const ratingMatrixMatchesStructure = (matrix, choices, factors) => {
+    if (!matrix || typeof matrix !== "object" || !choices?.length || !factors?.length) {
+        return false;
+    }
+
+    const choiceKeys = Object.keys(matrix);
+    if (choiceKeys.length !== choices.length) {
+        return false;
+    }
+    for (let i = 0; i < choices.length; i++) {
+        if (choiceKeys[i] !== choices[i]) {
+            return false;
+        }
+    }
+
+    const nested = matrix[choiceKeys[0]];
+    if (!nested || typeof nested !== "object") {
+        return false;
+    }
+    const factorKeys = Object.keys(nested);
+    if (factorKeys.length !== factors.length) {
+        return false;
+    }
+    for (let i = 0; i < factors.length; i++) {
+        if (factorKeys[i] !== factors[i].name) {
+            return false;
+        }
+    }
+    return true;
+};
+
+/**
  * Generate a rating matrix for choices and factors
  * 
  * @param {Array} choices - Array of choices to rate

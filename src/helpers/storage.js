@@ -54,12 +54,17 @@ export const determineStartingStep = () => {
     const savedStepData = getFromLocalStorage(STORAGE_KEYS.STEP_DATA, [1, 1]);
     const savedChoices = getFromLocalStorage(STORAGE_KEYS.CHOICES, []);
     const savedFactors = getFromLocalStorage(STORAGE_KEYS.FACTORS, []);
-    const savedRatingMatrix = getFromLocalStorage(STORAGE_KEYS.RATING_MATRIX, []);
+    const savedRatingMatrix = getFromLocalStorage(STORAGE_KEYS.RATING_MATRIX, {});
     
     // Determine which step to start at based on saved data
     if (savedStepData[0] > 1) {
         return savedStepData; // Use saved step data if it exists
-    } else if (savedRatingMatrix && Object.keys(savedRatingMatrix).length > 0) {
+    } else if (
+        savedRatingMatrix &&
+        typeof savedRatingMatrix === 'object' &&
+        !Array.isArray(savedRatingMatrix) &&
+        Object.keys(savedRatingMatrix).length > 0
+    ) {
         return [5, 5]; // Go to results if we have rating matrix
     } else if (savedFactors && savedFactors.length > 0) {
         return [3, 3]; // Go to factor importance if we have factors

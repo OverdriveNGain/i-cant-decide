@@ -1,20 +1,19 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { GenerateArray, Pd, Tern } from "../helpers/func";
+import React, { useEffect, useMemo, useRef, useContext } from 'react';
+import { GenerateArray } from "../helpers/func";
 import { preventEnterKeySubmission } from "../helpers/utils";
-import { getRatingMatrix } from "../helpers/ratingMatrix";
+import { getRatingMatrix, ratingMatrixMatchesStructure } from "../helpers/ratingMatrix";
 import useResize from "../hooks/useResize";
+import { AppStateContext } from '../contexts/AppStateContext';
 
 /**
  * Step 4: Form for rating each choice on each factor
  * 
- * @param {Object} props - Component props
- * @param {Array} props.choices - Array of choices to rate
- * @param {Array} props.factors - Array of factors with importance ratings
  * @param {Function} props.onChangeForm - Function to navigate between forms
- * @param {number} props.currentStep - Current active step
- * @param {Function} props.upperSetRatingMatrix - Function to update rating matrix in parent component
  */
-const RatingChoicesForm = ({ choices, factors, onChangeForm, currentStep, upperSetRatingMatrix }) => {
+const RatingChoicesForm = ({ onChangeForm }) => {
+    const { choices, factors, stepData, ratingMatrix, setRatingMatrix } = useContext(AppStateContext);
+    const currentStep = stepData[0];
+
     // Initialize oldRatingMatrix from localStorage if available
     const oldRatingMatrix = useRef({});
     
@@ -30,53 +29,30 @@ const RatingChoicesForm = ({ choices, factors, onChangeForm, currentStep, upperS
         }
     }, []);
     
-    const [ratingMatrix, setRatingMatrix] = useState({})
     const { breakpointSelector } = useResize();
     const modifyRatingMatrix = (choice, factorName, rating) => {
-        const copiedRatingMatrix = {};
-        for (const property in ratingMatrix) {
-            copiedRatingMatrix[property] = ({ ...ratingMatrix[property] });
-        }
-        copiedRatingMatrix[choice][factorName] = parseInt(rating);
-        setRatingMatrix(copiedRatingMatrix);
-        
-        // Save to localStorage immediately when ratings change
-        window.localStorage.setItem('icd_rating_matrix', JSON.stringify(copiedRatingMatrix));
-    }
+        setRatingMatrix((prev) => {
+            const copiedRatingMatrix = {};
+            for (const property in prev) {
+                copiedRatingMatrix[property] = ({ ...prev[property] });
+            }
+            if (!copiedRatingMatrix[choice]) copiedRatingMatrix[choice] = {};
+            copiedRatingMatrix[choice][factorName] = parseInt(rating, 10);
+            return copiedRatingMatrix;
+        });
+    };
     const nextStepClick = (e) => {
         e.preventDefault();
         oldRatingMatrix.current = ratingMatrix;
-        // Save to localStorage before proceeding to next step
-        window.localStorage.setItem('icd_rating_matrix', JSON.stringify(ratingMatrix));
-        upperSetRatingMatrix(ratingMatrix);
         onChangeForm(e, 5);
     }
     const previousStepClick = (e) => {
         e.preventDefault(e);
         oldRatingMatrix.current = ratingMatrix;
-        // Save to localStorage before going back
-        window.localStorage.setItem('icd_rating_matrix', JSON.stringify(ratingMatrix));
         onChangeForm(e, 3);
     }
-    const ratingMatrixIsUpdated = () => {
-        const ratingMatrixKeys = Object.keys(ratingMatrix);
-        if (ratingMatrixKeys.length !== choices.length)
-            return false;
-        for (let i = 0; i < choices.length; i++) {
-            if (ratingMatrixKeys[i] !== choices[i])
-                return false;
-        }
-        if (ratingMatrixKeys.length === 0)
-            return false;
-        const ratingMatrixFactorKeys = Object.keys(ratingMatrix[ratingMatrixKeys[0]])
-        if (ratingMatrixFactorKeys.length !== factors.length)
-            return false;
-        for (let i = 0; i < factors.length; i++) {
-            if (ratingMatrixFactorKeys[i] !== factors[i].name)
-                return false;
-        }
-        return true;
-    }
+    const ratingMatrixIsUpdated = () =>
+        ratingMatrixMatchesStructure(ratingMatrix, choices, factors);
     const ratingToWords = (rating) => {
         const emojis = ["🤮", "😒", "😐", "😋", "🤩"];
         const ratings = [
@@ -92,35 +68,21 @@ const RatingChoicesForm = ({ choices, factors, onChangeForm, currentStep, upperS
         )
     }
 
+    const choicesFactorsStructureKey = useMemo(
+        () => `${choices.join('\0')}|${factors.map((f) => f.name).join('\0')}`,
+        [choices, factors]
+    );
+
+    // Re-sync matrix when choice/factor *names* change only — not when factor importance (same names) updates.
     useEffect(() => {
-        // First try to get matrix from localStorage
+        if (!choices.length || !factors.length) {
+            return;
+        }
         const storedMatrix = window.localStorage.getItem('icd_rating_matrix');
         if (storedMatrix) {
             try {
                 const parsedMatrix = JSON.parse(storedMatrix);
-                // Check if the stored matrix is compatible with current choices and factors
-                let isCompatible = true;
-                
-                // Check if all current choices exist in the stored matrix
-                for (const choice of choices) {
-                    if (!parsedMatrix[choice]) {
-                        isCompatible = false;
-                        break;
-                    }
-                    
-                    // Check if all current factors exist for this choice
-                    for (const factor of factors) {
-                        if (parsedMatrix[choice][factor.name] === undefined) {
-                            isCompatible = false;
-                            break;
-                        }
-                    }
-                    
-                    if (!isCompatible) break;
-                }
-                
-                if (isCompatible) {
-                    // If stored matrix is compatible, use it
+                if (ratingMatrixMatchesStructure(parsedMatrix, choices, factors)) {
                     setRatingMatrix(parsedMatrix);
                     return;
                 }
@@ -128,10 +90,12 @@ const RatingChoicesForm = ({ choices, factors, onChangeForm, currentStep, upperS
                 console.error("Error parsing rating matrix from localStorage", e);
             }
         }
-        
-        // Fall back to generating a new matrix if localStorage data isn't usable
-        setRatingMatrix(getRatingMatrix(choices, factors, oldRatingMatrix.current));
-    }, [choices, factors])
+
+        setRatingMatrix((prev) =>
+            getRatingMatrix(choices, factors, Object.keys(prev).length > 0 ? prev : oldRatingMatrix.current)
+        );
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- choicesFactorsStructureKey encodes choices + factor names
+    }, [choicesFactorsStructureKey, setRatingMatrix]);
 
     if (!ratingMatrixIsUpdated())
         return null
