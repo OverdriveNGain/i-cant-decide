@@ -1,6 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useCallback } from 'react';
 import { GenerateArray, Tern } from "../helpers/func";
 import ResultCardsSection from "./ResultCardsSection";
+import EditableFactorImportance from './EditableFactorImportance';
+import FactorImportanceEditModal from './FactorImportanceEditModal';
 import { AppStateContext } from '../contexts/AppStateContext';
 
 /**
@@ -9,8 +11,33 @@ import { AppStateContext } from '../contexts/AppStateContext';
  * @param {Function} props.onChangeForm - Function to navigate between forms
  */
 const Results = () => {
-    const { ratingMatrix, factors, stepData, onChangeForm } = useContext(AppStateContext);
+    const { ratingMatrix, factors, setFactors, stepData, onChangeForm } = useContext(AppStateContext);
+    const [importanceModal, setImportanceModal] = useState(null);
+    const [draftImportance, setDraftImportance] = useState(3);
     const currentStep = stepData[0];
+
+    const updateFactorImportance = (factorName, value) => {
+        const r = parseInt(value, 10);
+        if (Number.isNaN(r)) return;
+        setFactors((prev) => prev.map((f) => (f.name === factorName ? { ...f, rating: r } : f)));
+    };
+
+    const openImportanceModal = (factorName) => {
+        const f = factors.find((x) => x.name === factorName);
+        const orig = f ? f.rating : 3;
+        setImportanceModal({ name: factorName });
+        setDraftImportance(orig);
+    };
+
+    const closeImportanceModal = useCallback(() => {
+        setImportanceModal(null);
+    }, []);
+
+    const confirmImportanceModal = () => {
+        if (!importanceModal) return;
+        updateFactorImportance(importanceModal.name, String(draftImportance));
+        closeImportanceModal();
+    };
 
     if (currentStep !== 5) {
         return null;
@@ -145,7 +172,11 @@ const Results = () => {
                                         <tr key={factorI}>
                                             <td className="text-start">{factors[factorI].name}</td>
                                             <td className="text-center">
-                                                {factors[factorI].rating}
+                                                <EditableFactorImportance
+                                                    factorName={factors[factorI].name}
+                                                    rating={factors[factorI].rating}
+                                                    onOpen={openImportanceModal}
+                                                />
                                             </td>
                                             {sortedIndices.map(optionI => {
                                                 return (
@@ -220,6 +251,7 @@ const Results = () => {
                         sums={sums}
                         normalizedSums={normalizedSums}
                         sortedIndices={sortedIndices}
+                        onOpenImportance={openImportanceModal}
                     />
                 
                 </div>
@@ -231,6 +263,15 @@ const Results = () => {
                 </div>
                 <small className="text-center o-50 d-block mt-5">This application is provided for informational purposes only. The decisions you make based on the results are your sole responsibility. The creators and maintainers of this tool make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, or suitability of the information provided. Any reliance you place on such information is strictly at your own risk.</small>
             </div>
+            {importanceModal && (
+                <FactorImportanceEditModal
+                    factorName={importanceModal.name}
+                    draftRating={draftImportance}
+                    onDraftChange={setDraftImportance}
+                    onConfirm={confirmImportanceModal}
+                    onCancel={closeImportanceModal}
+                />
+            )}
         </form>
     );
 };

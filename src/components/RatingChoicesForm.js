@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useContext } from 'react';
 import { GenerateArray } from "../helpers/func";
 import { preventEnterKeySubmission } from "../helpers/utils";
 import { getRatingMatrix, ratingMatrixMatchesStructure } from "../helpers/ratingMatrix";
+import { renderFivePointInterpretation } from "../helpers/fivePointRatingDisplay";
 import useResize from "../hooks/useResize";
 import { AppStateContext } from '../contexts/AppStateContext';
 
@@ -53,20 +54,8 @@ const RatingChoicesForm = ({ onChangeForm }) => {
     }
     const ratingMatrixIsUpdated = () =>
         ratingMatrixMatchesStructure(ratingMatrix, choices, factors);
-    const ratingToWords = (rating) => {
-        const emojis = ["🤮", "😒", "😐", "😋", "🤩"];
-        const ratings = [
-            "Very Bad ",
-            "Bad",
-            "Neutral",
-            "Good",
-            "Excellent"];
-        if (breakpointSelector(true, null, false))
-            return (<span className="text-muted">{emojis[parseInt(rating) - 1]}</span>)
-        return (
-            <span>{`${emojis[parseInt(rating) - 1]} ${ratings[parseInt(rating) - 1]}`}</span>
-        )
-    }
+    const ratingToWords = (rating) =>
+        renderFivePointInterpretation(rating, breakpointSelector(true, null, false));
 
     const choicesFactorsStructureKey = useMemo(
         () => `${choices.join('\0')}|${factors.map((f) => f.name).join('\0')}`,

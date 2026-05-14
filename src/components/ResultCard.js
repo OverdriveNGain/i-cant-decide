@@ -1,4 +1,5 @@
 import React from 'react';
+import EditableFactorImportance from './EditableFactorImportance.js';
 
 /**
  * Individual Results Card for mobile layout.
@@ -10,8 +11,9 @@ import React from 'react';
  * @param {Array} factors
  * @param {Array} values
  * @param {number} optionIndex
+ * @param {Function} props.onOpenImportance
  */
-const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, values, optionIndex }) => (
+const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, values, optionIndex, onOpenImportance }) => (
     <div className="col-12 mb-3">
         <div className={`card ${isWinner ? 'border-success' : ''}`}>
             {/* Card header with option name and scores */}
@@ -59,15 +61,11 @@ const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, 
                                     <tr key={factorI} className="border-bottom">
                                         <td className="ps-2 py-1 align-middle">{factor.name}</td>
                                         <td className="text-center py-1 align-middle">
-                                            <span className="badge rounded-pill px-2" 
-                                                style={{
-                                                    background: "#f0f4fa",
-                                                    color: "#205081",
-                                                    border: "1px solid #b3c5e6",
-                                                    fontSize: "0.85em"
-                                                }}>
-                                                {factor.rating}
-                                            </span>
+                                            <EditableFactorImportance
+                                                factorName={factor.name}
+                                                rating={factor.rating}
+                                                onOpen={onOpenImportance}
+                                            />
                                         </td>
                                         <td className="text-end pe-2 py-1 align-middle">
                                             <div className={textColorClass}>{score.toFixed(2)}</div>

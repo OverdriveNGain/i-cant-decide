@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GenerateArray } from "../helpers/func";
+import { renderFactorImportanceInterpretation } from "../helpers/factorImportanceInterpretation";
 import { preventEnterKeySubmission } from "../helpers/utils";
 
 const normalizeFactorList = (list) =>
@@ -67,17 +68,7 @@ const FactorImportanceForm = ({ initialFactors, onChangeForm, currentStep, upper
         onChangeForm(e, 2);
     }
 
-    const ratingToWords = (rating) => {
-        const ratings = [
-            "...is not that important",
-            "...is a bit important",
-            "...is somewhat important",
-            "...is important",
-            "...is very important"];
-        return (
-            <span>{ratings[parseInt(rating) - 1]}</span>
-        )
-    }
+    const ratingToWords = (rating) => renderFactorImportanceInterpretation(rating);
 
     // Save factor ratings whenever they change
     useEffect(() => {
@@ -125,15 +116,31 @@ const FactorImportanceForm = ({ initialFactors, onChangeForm, currentStep, upper
                         {
                             GenerateArray(
                                 factors.length,
-                                (index) => <div key={index} className="row align-items-center text-muted mb-2">
-                                    <span className="col-6 col-md-3 px-2">
-                                        <div className="p-0 w-100 text-end text-center rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)", lineHeight: "1.2" }}> <span className="fw-bold">{factors[index].name}</span>...</div>
-                                    </span>
-                                    <input className="px-2-0 col-6 col-md-3" type="range" min="1" max="5" disabled={currentStep !== 3} value={factors[index].rating} placeholder={`Enter factor ${index + 1}`} onChange={(e) => onFactorRatingChange(e, factors[index].name)} onKeyDown={preventEnterKeySubmission} />
-                                    <span className="col-12 col-md-6 px-2 pt-2 pb-3 py-md-0">
-                                        <div className="p-0 text-center w-100 rounded-1" style={{ backgroundColor: "rgb(240, 240, 240)", lineHeight: "1.2" }}>{ratingToWords(factors[index].rating)}</div>
-                                    </span>
-                                </div>
+                                (index) => (
+                                    <div key={index} className="row align-items-center text-muted mb-2">
+                                        <span className="col-6 col-md-3 px-2">
+                                            <div className="p-0 w-100 text-end text-center rounded-1" style={{ backgroundColor: 'rgb(240, 240, 240)', lineHeight: '1.2' }}>
+                                                {' '}
+                                                <span className="fw-bold">{factors[index].name}</span>...
+                                            </div>
+                                        </span>
+                                        <input
+                                            className="px-2-0 col-6 col-md-3"
+                                            type="range"
+                                            min="1"
+                                            max="5"
+                                            disabled={currentStep !== 3}
+                                            value={factors[index].rating}
+                                            onChange={(e) => onFactorRatingChange(e, factors[index].name)}
+                                            onKeyDown={preventEnterKeySubmission}
+                                        />
+                                        <span className="col-12 col-md-6 px-2 pt-2 pb-3 py-md-0">
+                                            <div className="p-0 text-center w-100 rounded-1" style={{ backgroundColor: 'rgb(240, 240, 240)', lineHeight: '1.2' }}>
+                                                {ratingToWords(factors[index].rating)}
+                                            </div>
+                                        </span>
+                                    </div>
+                                ),
                             )
                         }
                     </div>
