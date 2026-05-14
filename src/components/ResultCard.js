@@ -1,5 +1,6 @@
 import React from 'react';
 import EditableFactorImportance from './EditableFactorImportance.js';
+import EditableNormalizedScore from './EditableNormalizedScore.js';
 
 /**
  * Individual Results Card for mobile layout.
@@ -12,8 +13,9 @@ import EditableFactorImportance from './EditableFactorImportance.js';
  * @param {Array} values
  * @param {number} optionIndex
  * @param {Function} props.onOpenImportance
+ * @param {Function} props.onOpenRawRating - (choiceName, factorName) => void
  */
-const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, values, optionIndex, onOpenImportance }) => (
+const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, values, optionIndex, onOpenImportance, onOpenRawRating }) => (
     <div className="col-12 mb-3">
         <div className={`card ${isWinner ? 'border-success' : ''}`}>
             {/* Card header with option name and scores */}
@@ -70,7 +72,12 @@ const ResultCard = ({ optionName, isWinner, normalizedScore, rawScore, factors, 
                                         <td className="text-end pe-2 py-1 align-middle">
                                             <div className={textColorClass}>{score.toFixed(2)}</div>
                                             <div className="text-muted" style={{ fontSize: '0.65rem' }}>
-                                                {normalized.toFixed(2)} × {importance}
+                                                <EditableNormalizedScore
+                                                    normalizedDisplay={normalized.toFixed(2)}
+                                                    onOpen={() => onOpenRawRating(optionName, factor.name)}
+                                                />
+                                                {' × '}
+                                                {importance}
                                             </div>
                                         </td>
                                     </tr>

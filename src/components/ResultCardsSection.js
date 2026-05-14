@@ -13,6 +13,7 @@ import ResultCard from './ResultCard.js';
  * @param {Array} props.normalizedSums - Array of normalized final scores (0-100)
  * @param {Array} props.sortedIndices - Array of indices sorted by score (low to high)
  * @param {Function} props.onOpenImportance - (factorName) => void
+ * @param {Function} props.onOpenRawRating - (choiceName, factorName) => void
  */
 const ResultCardsSection = ({ 
     optionsArray, 
@@ -23,6 +24,7 @@ const ResultCardsSection = ({
     normalizedSums,
     sortedIndices,
     onOpenImportance,
+    onOpenRawRating,
 }) => {
     // Create a reversed sorted indices array (highest to lowest)
     const reversedSortedIndices = [...sortedIndices].reverse();
@@ -45,6 +47,7 @@ const ResultCardsSection = ({
                             values={values}
                             optionIndex={optionI}
                             onOpenImportance={onOpenImportance}
+                            onOpenRawRating={onOpenRawRating}
                         />
                     );
                 })}

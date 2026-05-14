@@ -2,7 +2,10 @@ import React, { useContext, useState, useCallback } from 'react';
 import { GenerateArray, Tern } from "../helpers/func";
 import ResultCardsSection from "./ResultCardsSection";
 import EditableFactorImportance from './EditableFactorImportance';
+import EditableNormalizedScore from './EditableNormalizedScore';
 import FactorImportanceEditModal from './FactorImportanceEditModal';
+import RawRatingEditModal from './RawRatingEditModal';
+import { previewNormalizedCellForFactor } from '../helpers/previewNormalizedRating';
 import { AppStateContext } from '../contexts/AppStateContext';
 
 /**
@@ -11,9 +14,11 @@ import { AppStateContext } from '../contexts/AppStateContext';
  * @param {Function} props.onChangeForm - Function to navigate between forms
  */
 const Results = () => {
-    const { ratingMatrix, factors, setFactors, stepData, onChangeForm } = useContext(AppStateContext);
+    const { ratingMatrix, factors, setFactors, setRatingMatrix, stepData, onChangeForm } = useContext(AppStateContext);
     const [importanceModal, setImportanceModal] = useState(null);
     const [draftImportance, setDraftImportance] = useState(3);
+    const [rawRatingModal, setRawRatingModal] = useState(null);
+    const [draftRawRating, setDraftRawRating] = useState(3);
     const currentStep = stepData[0];
 
     const updateFactorImportance = (factorName, value) => {
@@ -39,6 +44,32 @@ const Results = () => {
         closeImportanceModal();
     };
 
+    const openRawRatingModal = (choiceName, factorName) => {
+        const r = ratingMatrix[choiceName]?.[factorName];
+        const orig = typeof r === 'number' ? r : parseInt(r, 10);
+        setRawRatingModal({ choiceName, factorName });
+        setDraftRawRating(Number.isNaN(orig) ? 3 : orig);
+    };
+
+    const closeRawRatingModal = useCallback(() => {
+        setRawRatingModal(null);
+    }, []);
+
+    const confirmRawRatingModal = () => {
+        if (!rawRatingModal) return;
+        const { choiceName, factorName } = rawRatingModal;
+        setRatingMatrix((prev) => {
+            const copiedRatingMatrix = {};
+            for (const property in prev) {
+                copiedRatingMatrix[property] = { ...prev[property] };
+            }
+            if (!copiedRatingMatrix[choiceName]) copiedRatingMatrix[choiceName] = {};
+            copiedRatingMatrix[choiceName][factorName] = draftRawRating;
+            return copiedRatingMatrix;
+        });
+        closeRawRatingModal();
+    };
+
     if (currentStep !== 5) {
         return null;
     }
@@ -53,6 +84,17 @@ const Results = () => {
     }
 
     const optionsArray = Object.keys(ratingMatrix);
+
+    const rawRatingPreviewNormalized = rawRatingModal
+        ? previewNormalizedCellForFactor({
+              ratingMatrix,
+              optionsArray,
+              factorName: rawRatingModal.factorName,
+              optionName: rawRatingModal.choiceName,
+              factors,
+              draftRawRating,
+          })
+        : 0;
 
     const factorsArray = Object.keys(ratingMatrix[optionsArray[0]]);
     
@@ -203,7 +245,17 @@ const Results = () => {
                                                                 <>
                                                                     <div className={`mb-0 ${textColorClass}`}>{score.toFixed(2)}</div>
                                                                     <div className="text-muted" style={{ fontSize: '0.7rem', lineHeight: '1', marginTop: '-2px' }}>
-                                                                        {normalizedValues[factorI][optionI].toFixed(2)} × {factors[factorI].rating}
+                                                                        <EditableNormalizedScore
+                                                                            normalizedDisplay={normalizedValues[factorI][optionI].toFixed(2)}
+                                                                            onOpen={() =>
+                                                                                openRawRatingModal(
+                                                                                    optionsArray[optionI],
+                                                                                    factors[factorI].name,
+                                                                                )
+                                                                            }
+                                                                        />
+                                                                        {' × '}
+                                                                        {factors[factorI].rating}
                                                                     </div>
                                                                 </>
                                                             );
@@ -252,6 +304,7 @@ const Results = () => {
                         normalizedSums={normalizedSums}
                         sortedIndices={sortedIndices}
                         onOpenImportance={openImportanceModal}
+                        onOpenRawRating={openRawRatingModal}
                     />
                 
                 </div>
@@ -270,6 +323,17 @@ const Results = () => {
                     onDraftChange={setDraftImportance}
                     onConfirm={confirmImportanceModal}
                     onCancel={closeImportanceModal}
+                />
+            )}
+            {rawRatingModal && (
+                <RawRatingEditModal
+                    choiceName={rawRatingModal.choiceName}
+                    factorName={rawRatingModal.factorName}
+                    draftRating={draftRawRating}
+                    previewNormalized={rawRatingPreviewNormalized}
+                    onDraftChange={setDraftRawRating}
+                    onConfirm={confirmRawRatingModal}
+                    onCancel={closeRawRatingModal}
                 />
             )}
         </form>
