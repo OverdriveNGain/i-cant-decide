@@ -107,9 +107,12 @@ const RatingChoicesForm = ({ onChangeForm }) => {
             </div>
             <div className="p-3">
                 <div className="alert alert-info mb-3">
-                    <p className="mb-1"><strong>How your ratings will be calculated:</strong></p>
-                    <p className="mb-0 small">For each factor, your ratings will be normalized to range from 0.0 to 1.0, where 1.0 is assigned to the highest-rated choice for that factor. This ensures that factors with naturally higher scores don't dominate the results.</p>
+                    <div className="text-center">
+                        <p className="mb-1"><strong>How your ratings will be calculated:</strong></p>
+                        <p className="mb-0 small">For each factor, your ratings will be normalized to range from 0.0 to 1.0, where 1.0 is assigned to the highest-rated choice for that factor. This ensures that factors with naturally higher scores don't dominate the results.</p>
+                    </div>
                 </div>
+                <hr className="border-secondary border-opacity-25 my-3" />
                 <div>
                     {
                         GenerateArray(factors.length, (factorI) => {
