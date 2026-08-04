@@ -1,70 +1,97 @@
-# Getting Started with Create React App
+# I Can't Decide
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A rational decision-making tool that helps you make well-informed choices by evaluating multiple options against weighted criteria using normalized weighted sums.
 
-## Available Scripts
+![I Can't Decide overview](./screenshots/overview.png)
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## How It Works
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Struggling with complex purchasing decisions? Evaluating multiple options with competing priorities? This tool provides a structured 5-step approach:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Step 1 — Enter Your Choices
+List the options you're considering — brands, colleges, apartments, or anything else.
 
-### `npm test`
+![Step 1: Enter Choices](./screenshots/step-1-choices.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Step 2 — Enter Your Factors
+Define the criteria that vary among your choices (e.g., Price, Location, Battery Life).
 
-### `npm run build`
+![Step 2: Enter Factors](./screenshots/step-2-factors.png)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Step 3 — Set Factor Importance
+Rate how important each factor is to your decision on a 1–5 scale.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+![Step 3: Set Factor Importance](./screenshots/step-3-importance.png)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Step 4 — Rate Your Choices
+Score each choice on every factor. Ratings are normalized so no single factor dominates the results unfairly.
 
-### `npm run eject`
+![Step 4: Rate Your Choices](./screenshots/step-4-rate.png)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Step 5 — View Results
+See the calculated scores with a breakdown of how each choice performed across every factor.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+![Step 5: View Results](./screenshots/step-5-results.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+---
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Tech Stack
 
-## Learn More
+- **React** (Create React App)
+- **Bootstrap 5** for styling
+- **Bootstrap Icons**
+- **react-p5** for the animated background
+- **Firebase Hosting** for deployment
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Getting Started
 
-### Code Splitting
+### Prerequisites
+- Node.js and npm
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Install
+```bash
+npm install
+```
 
-### Analyzing the Bundle Size
+### Run Locally
+```bash
+npm start
+```
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Build
+```bash
+npm run build
+```
+Outputs to the `build/` directory, ready for deployment.
 
-### Making a Progressive Web App
+### Deploy
+```bash
+npm run build && firebase deploy
+```
+The app is hosted on Firebase Hosting.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+src/
+  components/     # React components (forms, results, modals)
+  contexts/       # React Context (AppStateContext)
+  helpers/        # Utility functions, constants, rating calculations, storage
+  hooks/          # Custom hooks (useResize)
+  screens/        # Page-level components (Home)
+  css/            # Custom styles
+public/           # Static assets, favicons, manifest
+```
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Disclaimer
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This application is provided for informational purposes only. The decisions you make based on the results are your sole responsibility. The creators and maintainers make no warranties about the accuracy or suitability of the information provided.
