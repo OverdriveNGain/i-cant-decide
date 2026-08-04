@@ -7,14 +7,6 @@ const GenerateArray = (length, generator) => {
     return temp;
 }
 
-const GenerateArrayFromObject = (object, generator) => {
-    const temp = [];
-    for (let property in object) {
-        temp.push(generator(property));
-    }
-    return temp;
-}
-
 const Tern = (bool, v1, v2) => {
     if (bool)
         return v1;
@@ -23,4 +15,4 @@ const Tern = (bool, v1, v2) => {
 
 const Pd = (e, func) => { e.preventDefault(); func(); }
 
-export { GenerateArray, GenerateArrayFromObject, Tern, Pd };
+export { GenerateArray, Tern, Pd };

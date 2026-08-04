@@ -59,7 +59,6 @@ const Home = () => {
     // Open confirmation modal
     const openConfirmModal = (e) => {
         if (e) e.preventDefault();
-        console.log('Opening modal');
         setShowConfirmModal(true);
     };
     

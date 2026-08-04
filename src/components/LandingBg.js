@@ -35,8 +35,6 @@ const LandingBg = (_) => {
                 p5.ellipse((x / rows) * w, (y / cols) * h, ((x + 1) / rows) * w, ((y + 1) / cols) * h)
             }
         }
-
-        // p5.background(200, p5.lerp(100, 240, noise), 255);
     };
 
     return (
